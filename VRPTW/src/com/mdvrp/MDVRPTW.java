@@ -12,7 +12,11 @@ import com.TabuSearch.MySolution;
 import com.TabuSearch.MyTabuList;
 
 public class MDVRPTW {
-		
+	
+	private static String class_name = MDVRPTW.class.getName();
+	private static MyLogger MyLog = new MyLogger(class_name);
+
+
 	public static void main(String[] args) {
 		MySearchProgram     search;
 		MySolution          initialSol;
@@ -24,36 +28,63 @@ public class MDVRPTW {
 		Duration            duration 		= new Duration(); 		// used to calculate the elapsed time
 		PrintStream         outPrintSream 	= null;					// used to redirect the output
 		
-		try {			
+		try {
+			
+			startLog();
 			// check to see if an input file was specified
+			MyLog.info(class_name, "main", parameters.toString());
 			parameters.updateParameters(args);
+			
+			MyLog.info(class_name, "main", "parameters.updateParameters(args) => parameters set");
 			if(parameters.getInputFileName() == null){
-				System.out.println("You must specify an input file name");
+				MyLog.err(class_name, "main", "parameters.getInputFileName() = null => You must specify an input file name");
 				return;
 			}
 			
+			
 			duration.start();
+			MyLog.info(class_name, "main", "time counting started");
 
 			// get the instance from the file			
-			instance = new Instance(parameters); 
+			instance = new Instance(parameters);
+			MyLog.info(class_name, "main", "new Instance(parameters) => instance created successfully");
+			
 			instance.populateFromHombergFile(parameters.getInputFileName());
+			MyLog.info(class_name, "main", "instance.populateFromHombergFile(parameters.getInputFileName()) => instnce populated from file " + parameters.getInputFileName());
 						
 			// Init memory for Tabu Search
 			initialSol 		= new MySolution(instance);
+			MyLog.info(class_name, "main", "new MySolution(instance) => initial solution instance created");
+			
 			objFunc 		= new MyObjectiveFunction(instance);
-	        moveManager 	= new MyMoveManager(instance);
-	        moveManager.setMovesType(parameters.getMovesType());
+			MyLog.info(class_name, "main", "new MyObjectiveFunction(instance) => objective function instance created and initialized with MyInitilaSolution");
+	        
+			moveManager 	= new MyMoveManager(instance);
+			MyLog.info(class_name, "main", "new MyMoveManager(instance) => move manager instance created");
+	       
+			moveManager.setMovesType(parameters.getMovesType());
+			MyLog.info(class_name, "main", "moveManager.setMovesType(parameters.getMovesType()) => move type set to " + parameters.getMovesType());
 	        
 	        // Tabu list
 	        int dimension[] = {instance.getDepotsNr(), instance.getVehiclesNr(), instance.getCustomersNr(), 1, 1};
+	        MyLog.info(class_name, "main", "number of Depots: " + instance.getDepotsNr());
+	        MyLog.info(class_name, "main", "number of Vehicles: " + instance.getVehiclesNr());
+	        MyLog.info(class_name, "main", "number of Customers: " + instance.getCustomersNr());
+			
 	        tabuList 		= new MyTabuList(parameters.getTabuTenure(), dimension);
+	        MyLog.info(class_name, "main", "new MyTabuList(parameters.getTabuTenure(), dimension) =>  Tabu List created");
 	        
 	        // Create Tabu Search object
 	        search 			= new MySearchProgram(instance, initialSol, moveManager,
-							            objFunc, tabuList, false,  outPrintSream);
+							            objFunc, tabuList, false, outPrintSream);
+	        MyLog.info(class_name, "main", "new MySearchProgram(instance, initialSol, moveManager, objFunc, tabuList, false, outPrintSream) => search program created");
+	        
 	        // Start solving        
-	        search.tabuSearch.setIterationsToGo(parameters.getIterations());
-	        search.tabuSearch.startSolving();
+	        search.getTabuSearch().setIterationsToGo(parameters.getIterations());
+	        MyLog.info(class_name, "main", "search.tabuSearch.setIterationsToGo(parameters.getIterations()) => number of iterations = " + parameters.getIterations());
+	        
+	        search.getTabuSearch().startSolving();
+	        MyLog.info(class_name, "main", "search.tabuSearch.startSolving(); => START");
 	        
 	        // wait for the search thread to finish
 	        try {
@@ -63,9 +94,12 @@ public class MDVRPTW {
 	        	}
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
+				MyLog.err(class_name, "main", e1.getMessage());
 			}
 	        
 	        duration.stop();
+	        MyLog.info(class_name, "main", "time counting stopped");
+	        MyLog.info(class_name, "main", "total execution time = " + duration.toString());
 	        
 	        // Count routes
 	        int routesNr = 0;
@@ -82,10 +116,39 @@ public class MDVRPTW {
 	        fw.write(outSol);
 	        fw.close();
 	        
+	        
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			MyLog.err(class_name, "main", e.getMessage());
 		}
-
+		
+		stopLog();
+	}
+	
+	protected static void startLog(){
+		
+		String s = "\n"
+				 + "*********************************************************\n"
+				 + "*********************************************************\n"
+				 + "**                                                     **\n"
+				 + "**                VRPTW Execution Start                **\n"
+				 + "**                                                     **\n"
+				 + "*********************************************************\n"
+				 + "*********************************************************\n";
+		MyLog.info(class_name, "main", s);
+		
+	}
+	
+	protected static void stopLog(){
+		
+		String s = "\n"
+				 + "*********************************************************\n"
+				 + "*********************************************************\n"
+				 + "**                                                     **\n"
+				 + "**                 VRPTW Execution End                 **\n"
+				 + "**                                                     **\n"
+				 + "*********************************************************\n"
+				 + "*********************************************************\n";
+		MyLog.info(class_name, "main", s);
 	}
 }

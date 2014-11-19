@@ -3,14 +3,29 @@ package com.TabuSearch;
 import java.io.PrintStream;
 import java.text.DecimalFormat;
 
-import org.coinor.opents.*;
+import org.coinor.opents.BestEverAspirationCriteria;
+import org.coinor.opents.MoveManager;
+import org.coinor.opents.MultiThreadedTabuSearch;
+import org.coinor.opents.ObjectiveFunction;
+import org.coinor.opents.Solution;
+import org.coinor.opents.TabuList;
+import org.coinor.opents.TabuSearch;
+import org.coinor.opents.TabuSearchEvent;
+import org.coinor.opents.TabuSearchListener;
 
-import com.mdvrp.*;
+import com.mdvrp.Cost;
+import com.mdvrp.Instance;
+import com.mdvrp.MyLogger;
+import com.mdvrp.Route;
 
 @SuppressWarnings("serial")
 public class MySearchProgram implements TabuSearchListener{
+	
+	private static String class_name = MySearchProgram.class.getName();
+	private static MyLogger MyLog = new MyLogger(class_name);
+
 	private static int iterationsDone;
-	public TabuSearch tabuSearch;
+	private TabuSearch tabuSearch;
 	private MySolution sol;
 	public Instance instance;
 	public Route[][] feasibleRoutes; // stores the routes of the feasible solution if any
@@ -34,6 +49,10 @@ public class MySearchProgram implements TabuSearchListener{
 		tabuSearch.addTabuSearchListener((MyTabuList)tabuList);
 	}
 
+	public TabuSearch getTabuSearch() {
+		return tabuSearch;
+	}
+	
 	public void improvingMoveMade(TabuSearchEvent event) {}
 
 	/**
@@ -68,7 +87,7 @@ public class MySearchProgram implements TabuSearchListener{
 			feasibleRoutes = cloneRoutes(sol.getRoutes());
 			// set the new best to the current one
 			tabuSearch.setBestSolution(sol);
-			System.out.println("It " + tabuSearch.getIterationsCompleted() +" - New solution " + sol.getCost().total);
+			System.out.println("Iteration " + tabuSearch.getIterationsCompleted() +" - New solution " + sol.getCost().total);
 		}
 		
 		sol.updateParameters(sol.getObjectiveValue()[3], sol.getObjectiveValue()[4], sol.getObjectiveValue()[5]);
@@ -104,6 +123,8 @@ public class MySearchProgram implements TabuSearchListener{
 			sol.setRoutes(feasibleRoutes);
 			sol.setFeasibleIndex(feasibleIndex);
 			tabuSearch.setBestSolution(sol);
+			MyLog.warning(class_name, "tabuSearchStopped", "final solution");
+			MyLog.info(class_name, "tabuSearchStopped", sol.toString());
 		}
 		
 		// wake up the main thread

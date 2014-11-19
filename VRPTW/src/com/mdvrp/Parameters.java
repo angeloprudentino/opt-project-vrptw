@@ -13,10 +13,12 @@ public class Parameters {
 	private int tabuTenure;
 	private boolean variableTenure;
 	private String currDir;
+	MyLogger MyLog = new MyLogger(Parameters.class.getName());
+
 	
 	public Parameters() {
 		currDir 			= System.getProperty("user.dir");
-		outputFileName    	= currDir + "/output/solutions.csv";
+		outputFileName    	= currDir + "\\output\\solutions.csv";
 		movesType         	= MovesType.SWAP;
 		precision         	= 1E-2;
 		iterations        	= 1000;
@@ -61,18 +63,18 @@ public class Parameters {
 						}else if(args[i+1].equalsIgnoreCase("false")){
 							setVariableTenure(false);
 						}else {
-							System.out.println("Variable tenure argument must be true of false. Set to default false!");
+							MyLog.warning(Parameters.class.getName(), "updateParameters(String[] args)", "Variable tenure argument must be true of false. Set to default false!");
 							throw new Exception();
 						}
 						break;
 					default: {
-						System.out.println("Unknown type of argument: " + args[i]);
+						MyLog.err(Parameters.class.getName(), "updateParameters(String[] args)", "Unknown type of argument: " + args[i]);
 						throw new Exception();
 					}
 				}
 			}
 		}else {
-			System.out.println("Parameters are not in correct format");
+			MyLog.err(Parameters.class.getName(), "updateParameters(String[] args)", "Parameters are not in correct format");
 			throw new Exception();
 		}
 	}
