@@ -1,17 +1,23 @@
 package com.TabuSearch;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.coinor.opents.*;
+import org.coinor.opents.SolutionAdapter;
 
 import com.mdvrp.Cost;
 import com.mdvrp.Customer;
 import com.mdvrp.Instance;
+import com.mdvrp.MyLogger;
 import com.mdvrp.Route;
 import com.mdvrp.Vehicle;
 
 @SuppressWarnings("serial")
 public class MySolution extends SolutionAdapter{
+	
+	private static String class_name = MySolution.class.getName();
+	private static MyLogger MyLog = new MyLogger(class_name);
+
 	private static Instance instance;
 	private static int iterationsDone;
 	private Route[][] routes; // stores the routes to be modified on
@@ -33,7 +39,13 @@ public class MySolution extends SolutionAdapter{
 		MySolution.setInstance(instance);
 		cost = new Cost();
 		initializeRoutes(instance);
+		MyLog.warning(class_name, "constructor", "initializeRoutes(instance)");
+		MyLog.info(class_name, "constructor", toString());
+		
 		buildInitialRoutes1(instance);
+		MyLog.warning(class_name, "constructor", "buildInitialRoutes1(instance)");
+		MyLog.info(class_name, "constructor", toString());
+		
 		// used for input routes from file
 		alpha 	= 1;
     	beta 	= 1;
@@ -333,7 +345,7 @@ public class MySolution extends SolutionAdapter{
 	
 	public String printMovesAndCosts(){
 		StringBuffer print = new StringBuffer();
-		print.append("------------------------<<--Solution Moves And Costs-----------------------");
+		print.append("\n------------------------<<--Solution Moves And Costs-----------------------");
 		for (int i = 0; i < moves.size(); ++i){
 			MySwapMove move = moves.get(i);
 			Cost cost = costs.get(i);
@@ -352,7 +364,7 @@ public class MySolution extends SolutionAdapter{
 	public String printTimeWindows() {
 		
 		StringBuffer print = new StringBuffer();
-		print.append("------------------------<<--Solution-----------------------");
+		print.append("\n------------------------<<--Solution-----------------------");
 		for (int i = 0; i < routes.length; ++i){
 			print.append("\n" + "Depot: " + i + " ");
 			for (int j = 0; j < routes[i].length; ++j){
@@ -375,7 +387,7 @@ public class MySolution extends SolutionAdapter{
 	public String toString() {
 		
 		StringBuffer print = new StringBuffer();
-		print.append("------------------------<<--Solution-----------------------");
+		print.append("\n------------------------<<--Solution-----------------------");
 		for (int i = 0; i < routes.length; ++i){
 			print.append("\n" + "Depot: " + i + "\n");
 			for (int j = 0; j < routes[i].length; ++j){
@@ -386,9 +398,9 @@ public class MySolution extends SolutionAdapter{
 		
 		print.append("Total Cost\n" + cost );
 		for (int i = 0; i < routes.length; ++i){
-			for (int j = 0; j < routes[i].length; ++j){
-				print.append(routes[i][j].printRouteCost());
-			}
+//			for (int j = 0; j < routes[i].length; ++j){
+//				print.append(routes[i][j].printRouteCost());
+//			}
 			print.append("\n");
 		}
 		print.append("--------------------------Solution-->>-----------------------");

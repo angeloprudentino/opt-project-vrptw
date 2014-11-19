@@ -12,6 +12,10 @@ import java.util.Scanner;
  * needed for the initial solution.
  */
 public class Instance {
+	
+	private static String class_name = Instance.class.getName();
+	private static MyLogger MyLog = new MyLogger(class_name);
+
 	private int vehiclesNr;
 	private int customersNr;
 	private int depotsNr;
@@ -117,7 +121,8 @@ public class Instance {
 			sortAssignedCustomers();
 		} catch (FileNotFoundException e) {
 			// File not found
-			System.out.println("File not found!");
+			System.err.println("File not found!");
+			MyLog.err(class_name, "populateFromHombergFile(String filename)", e.getMessage());
 			System.exit(-1);
 		}
 	}
