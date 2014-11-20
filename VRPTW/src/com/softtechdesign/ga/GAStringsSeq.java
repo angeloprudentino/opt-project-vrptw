@@ -100,7 +100,9 @@ public abstract class GAStringsSeq extends GA
      * to one of the possible gene values
      * @param iChromIndex
      */
-    protected void doRandomMutation(int iChromIndex)
+    @SuppressWarnings("unused")
+    
+	protected void doRandomMutation(int iChromIndex)
     {
         int geneIndex;
         char cTemp;
@@ -179,7 +181,9 @@ public abstract class GAStringsSeq extends GA
      * @param Chrom1
      * @param Chrom2
      */
-    protected void doTwoPtCrossover(Chromosome Chrom1, Chromosome Chrom2)
+    @SuppressWarnings("unused")
+    
+	protected void doTwoPtCrossover(Chromosome Chrom1, Chromosome Chrom2)
     {
         String sNewChrom1, sNewChrom2;
         int iCrossoverPoint1, iCrossoverPoint2;
@@ -222,7 +226,9 @@ public abstract class GAStringsSeq extends GA
      * @param Chrom1
      * @param Chrom2
      */
-    protected void doUniformCrossover(Chromosome Chrom1, Chromosome Chrom2)
+    @SuppressWarnings("unused")
+    
+	protected void doUniformCrossover(Chromosome Chrom1, Chromosome Chrom2)
     {
         int iGeneToSwap;
         char cGene;

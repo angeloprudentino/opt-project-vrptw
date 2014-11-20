@@ -4,6 +4,8 @@ package com.softtechdesign.ga;
  * Custom GA exception class
  * @author Jeff Smith jeff@SoftTechDesign.com
  */
+@SuppressWarnings("serial")
+
 public class GAException extends Exception
 {
     /**
