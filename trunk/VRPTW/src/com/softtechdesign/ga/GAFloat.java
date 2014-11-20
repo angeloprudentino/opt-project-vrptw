@@ -140,7 +140,9 @@ public abstract class GAFloat extends GA
      * @param Chrom1
      * @param Chrom2
      */
-    protected void doUniformCrossover(Chromosome Chrom1, Chromosome Chrom2)
+    @SuppressWarnings("unused")
+    
+	protected void doUniformCrossover(Chromosome Chrom1, Chromosome Chrom2)
     {
         double rGene1, rGene2;
         String sGene1, sGene2;

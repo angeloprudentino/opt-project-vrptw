@@ -1,5 +1,5 @@
 package com.softtechdesign.ga;
-import java.util.*;
+import java.util.Date;
 
 /**
  * <pre>
@@ -505,7 +505,9 @@ public abstract class GA implements Runnable
     /**
      * Calculate rankings for all chromosomes. High ranking numbers denote very fit chromosomes.
      */
-    void computeFitnessRankings()
+    @SuppressWarnings("unused")
+    
+	void computeFitnessRankings()
     {
         double rValue;
 
