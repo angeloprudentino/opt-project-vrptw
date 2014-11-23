@@ -502,6 +502,30 @@ public class MySolution extends SolutionAdapter{
 		MySolution.iterationsDone = iterationsDone;
 	}
 	
-	
+	public Customer[] ConvertTSGA(){
+		int i=0, j=0, k=0, tot=0;
+		List<Customer> currV;
+		Customer DepotCust = new Customer();
+		DepotCust.setNumber(0);
+		//Numero totale di elementi
+		for (i=0; i<instance.getVehiclesNr(); i++){
+			for (j=0; j<routes[0][i].getCustomersLength() ; j++) {
+					tot++;
+			}
+			tot++;
+		}
+		Customer GACustArray[] = new Customer[tot];
+		for (i=0; i<instance.getVehiclesNr(); i++){
+			currV = routes[0][i].getCustomers();
+			for (j=0; j<routes[0][i].getCustomersLength() ; j++) {
+					GACustArray[k] = currV.get(j);
+					k++;
+			}
+			GACustArray[k]=DepotCust;
+			k++;
+		}
+		
+		return GACustArray;
+	}
 
 }
