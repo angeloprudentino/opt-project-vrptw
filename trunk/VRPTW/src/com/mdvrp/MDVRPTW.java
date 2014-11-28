@@ -56,6 +56,8 @@ public class MDVRPTW {
 			initialSol = new MySolution(instance);
 			MyLog.info(class_name, "main", "new MySolution(instance) => initial solution instance created");
 			
+			initialSol.ConvertTSGA();
+			
 			objFunc = new MyObjectiveFunction(instance);
 			MyLog.info(class_name, "main", "new MyObjectiveFunction(instance) => objective function instance created and initialized with MyInitilaSolution");
 	        
