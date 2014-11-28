@@ -12,9 +12,9 @@ package com.softtechdesign.ga;
 public abstract class Chromosome
 {
     /** absolute (not relative) fitness value */
-    protected double fitness; 
+    public double fitness; 
     /** 0 = worst fit, PopDim = best fit */
-    protected int fitnessRank; 
+    public int fitnessRank; 
     /** Get the genes as a string */
     abstract String getGenesAsStr();
     /** Copy the genes from the given chromosome over this chromosome's genes */
