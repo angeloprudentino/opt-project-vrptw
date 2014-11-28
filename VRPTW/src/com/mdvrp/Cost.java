@@ -7,23 +7,23 @@ package com.mdvrp;
 public class Cost {
 	public double total;			 // sum of all the costs
 	public double travelTime;		 // sum of all distances travel time
-	public double load;			     // sum of all quantities
+	public double load;			 // sum of all quantities
 	public double serviceTime;		 // sum of all service time;	 
 	public double waitingTime;		 // sum of all waiting times when arrives before start TW
-	public double loadViol;		     // violation of the load
-	public double durationViol;      // violation of the duration waiting time + service time
-	public double twViol;            // violation of the time window
-	public double returnToDepotTime; // stores time to return to the depot
-	public double depotTwViol;       // stores the time window violation of the depot
+	public double loadViol;		         // violation of the load
+	public double durationViol;              // violation of the duration waiting time + service time
+	public double twViol;                    // violation of the time window
+	public double returnToDepotTime;         // stores time to return to the depot
+	public double depotTwViol;               // stores the time window violation of the depot
 	
 	
 	// default constructor
 	public Cost(){
 		total             = 0;
 		travelTime        = 0;
-		load		      = 0;
-		serviceTime		  = 0;
-		waitingTime		  = 0;
+		load		  = 0;
+		serviceTime	  = 0;
+		waitingTime	  = 0;
 		
 		loadViol          = 0;
 		durationViol      = 0;
@@ -144,10 +144,10 @@ public class Cost {
 		total             	= 0;
 		travelTime        	= 0;
 		load		      	= 0;
-		serviceTime		  	= 0;
-		waitingTime			= 0;
+		serviceTime		= 0;
+		waitingTime		= 0;
 		
-		loadViol			= 0;
+		loadViol		= 0;
 		durationViol 		= 0;
 		twViol       		= 0;
 		

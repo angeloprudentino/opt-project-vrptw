@@ -398,9 +398,9 @@ public class MySolution extends SolutionAdapter{
 		
 		print.append("Total Cost\n" + cost );
 		for (int i = 0; i < routes.length; ++i){
-//			for (int j = 0; j < routes[i].length; ++j){
-//				print.append(routes[i][j].printRouteCost());
-//			}
+			for (int j = 0; j < routes[i].length; ++j){
+				print.append(routes[i][j].printRouteCost());
+			}
 			print.append("\n");
 		}
 		print.append("--------------------------Solution-->>-----------------------");

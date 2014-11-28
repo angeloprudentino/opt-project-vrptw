@@ -24,9 +24,9 @@ public class MDVRPTW {
 		MyMoveManager       moveManager;
 		TabuList            tabuList;
 		Parameters          parameters 		= new Parameters(); 	// holds all the parameters passed from the input line
-		Instance            instance; 								// holds all the problem data extracted from the input file
-		Duration            duration 		= new Duration(); 		// used to calculate the elapsed time
-		PrintStream         outPrintSream 	= null;					// used to redirect the output
+		Instance            instance; 					// holds all the problem data extracted from the input file
+		Duration            duration 		= new Duration(); 	// used to calculate the elapsed time
+		PrintStream         outPrintSream 	= null;			// used to redirect the output
 		
 		try {
 			
@@ -53,13 +53,13 @@ public class MDVRPTW {
 			MyLog.info(class_name, "main", "instance.populateFromHombergFile(parameters.getInputFileName()) => instnce populated from file " + parameters.getInputFileName());
 						
 			// Init memory for Tabu Search
-			initialSol 		= new MySolution(instance);
+			initialSol = new MySolution(instance);
 			MyLog.info(class_name, "main", "new MySolution(instance) => initial solution instance created");
 			
-			objFunc 		= new MyObjectiveFunction(instance);
+			objFunc = new MyObjectiveFunction(instance);
 			MyLog.info(class_name, "main", "new MyObjectiveFunction(instance) => objective function instance created and initialized with MyInitilaSolution");
 	        
-			moveManager 	= new MyMoveManager(instance);
+			moveManager = new MyMoveManager(instance);
 			MyLog.info(class_name, "main", "new MyMoveManager(instance) => move manager instance created");
 	       
 			moveManager.setMovesType(parameters.getMovesType());

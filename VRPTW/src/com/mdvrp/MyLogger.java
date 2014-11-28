@@ -40,7 +40,7 @@ class MyFormatter extends Formatter {
 public class MyLogger {
 
 	private static final DateFormat df = new SimpleDateFormat("ddMMyyyy");
-	private static final String LOG_FILE = "VRPTW_";
+	private static final String LOG_FILE = "GA_VRPTW_";
 	private Logger log = null;
 	private static FileHandler handler = null;
 
@@ -89,7 +89,7 @@ public class MyLogger {
 			StringBuffer s = new StringBuffer("w");
 			for (int i = 0; i < len + 9; i++)
 				s.append("w");
-			log.logp(Level.SEVERE, sender, fun, "\n" + s.toString() + "\n" + "w    " + msg + "    w\n" + s.toString());
+			log.logp(Level.WARNING, sender, fun, "\n" + s.toString() + "\n" + "w    " + msg + "    w\n" + s.toString());
 		}
 	}
 
