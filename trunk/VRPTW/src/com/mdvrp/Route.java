@@ -5,10 +5,10 @@ import java.util.List;
 
 public class Route {
 	private int index;				  // Number of the route
-	private Cost cost;                // cost of the route
-	private Vehicle assignedVehicle;  // vehicle assigned to the route
-	private Depot depot;              // depot the route starts from
-	private List<Customer> customers; //list of customers served in the route
+	private Cost cost;                                // cost of the route
+	private Vehicle assignedVehicle;                  // vehicle assigned to the route
+	private Depot depot;                              // depot the route starts from
+	private List<Customer> customers;                 //list of customers served in the route
 	
 	/**
 	 * Constructor of the route

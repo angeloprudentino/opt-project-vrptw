@@ -21,7 +21,7 @@ public class Instance {
 	private int depotsNr;
 	private int daysNr = 1;;
 	private ArrayList<Customer> customers 	= new ArrayList<>(); 		// vector of customers;
-	private ArrayList<Depot> depots 		= new ArrayList<>();       	// vector of depots;
+	private ArrayList<Depot> depots 	= new ArrayList<>();       	// vector of depots;
 	private double[][] durations;
 	private double[][] capacities;
 	private double[][] distances;
@@ -336,6 +336,22 @@ public class Instance {
 			print.append(depots.get(i) + "\n");
 		}
 		return print.toString();
+	}
+	
+	/**
+	 * @param the customer corresponding to the given numberID
+	 */
+	public Customer getCustomerByNumID(int numID){
+	   // assuming ordered list of customers
+	    return customers.get(numID);
+	}
+	
+	/**
+	 * @param array of all customers
+	 */
+	public Customer[] getCustomers(){
+	    Customer[] c = new Customer[customersNr];
+	    return customers.toArray(c);
 	}
 	
 	/**

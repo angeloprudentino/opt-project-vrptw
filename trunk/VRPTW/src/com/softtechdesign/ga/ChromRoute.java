@@ -4,19 +4,27 @@
  */
 package com.softtechdesign.ga;
 
+import java.util.StringTokenizer;
+
 import com.mdvrp.Customer;
+import com.mdvrp.Instance;
 import com.mdvrp.Route;
 
 /**
  * 
  * Chromosome class where genes are stored as an array of Route
  * @author Angelo Prudentino
+ * @date 20/nov/2014
  *
  */
 public class ChromRoute extends Chromosome {
 
     /** array of genes which comprise this Chromosome */
     private Customer[] genes;
+    /** Route to which is associated the Chromosome */
+    private Route route;
+    /** Reference to the instance of the problem */
+    private Instance inst;
 
     /**
      * Creates new string array of genes 
@@ -37,10 +45,32 @@ public class ChromRoute extends Chromosome {
     }
 
     /**
+     * @return the route
+     */
+    public Route getRoute() {
+        return route;
+    }
+
+    /**
+     * @param the route to set
+     */
+    public void setRoute(Route route) {
+        this.route = route;
+    }
+
+    /**
+     * @param inst the inst to set
+     */
+    public void setInst(Instance inst) {
+        this.inst = inst;
+    }
+
+    /**
      * sets the gene value
      * @param gene value to set
      * @param geneIndex index of gene
      */
+    
     public void setGene(Customer gene, int geneIndex)
     {
         genes[geneIndex] = gene;
@@ -84,7 +114,7 @@ public class ChromRoute extends Chromosome {
         StringBuffer sb = new StringBuffer(genesLength);
         for (int i = 0; i < genesLength; i++)
         {
-            sb.append(genes[i]);
+            sb.append(genes[i].toString());
             if (i < genesLength - 1)
                 sb.append("|");
         }
@@ -100,6 +130,16 @@ public class ChromRoute extends Chromosome {
     {
         return (this.genes[iGene]);
     }
+    
+    /**
+     * return the gene as a string
+     * @return String
+     */
+    public String getGeneAsStr(int iGene)
+    {
+        String gene = "" + genes[iGene];
+        return gene;
+    }
 
     /**
      * Copy the genes from the given chromosome over the existing genes
@@ -113,11 +153,28 @@ public class ChromRoute extends Chromosome {
         for (iGene = 0; iGene < genes.length; iGene++)
             this.genes[iGene] = chromR.genes[iGene];
     }
+<<<<<<< .mine    
+    /**
+     * create a new list of genes starting from a string representation
+     * @param sGenes --> list of genes in string format "i - k - j"
+     */
     
+    public void setGenesFromStr(String sGenes){
+	
+	StringTokenizer tokenizer = new StringTokenizer(sGenes, " - ", false);
+	int i = 0;
+	while(tokenizer.hasMoreTokens()){
+	    int num = Integer.parseInt(tokenizer.nextToken());
+	    genes[i] = inst.getCustomerByNumID(num);
+	    i++;
+	}
+	    
+    }
+=======    
     public int length(){
     	return genes.length;
     }
-
+>>>>>>> .theirs
 	public int getPosition(Customer gene) {
 		for(int i = 0; i < genes.length; i++){
 			if(cmpGeneNumber(genes[i], gene) == true) return i;
