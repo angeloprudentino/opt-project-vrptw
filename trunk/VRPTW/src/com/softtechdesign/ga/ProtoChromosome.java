@@ -22,7 +22,7 @@ public class ProtoChromosome {
 	}
 
 	public void addGene(int v, Customer cust) {
-		routes[v].addCustomer(cust);
+		//routes[v].addCustomer(cust);
 	}
 
 	

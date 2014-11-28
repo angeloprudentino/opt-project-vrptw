@@ -64,6 +64,8 @@ public class MySearchProgram implements TabuSearchListener{
 		bestCost 	= getCostFromObjective(sol.getObjectiveValue());
 		bestRoutes 	= cloneRoutes(sol.getRoutes());
 		bestIndex 	= tabuSearch.getIterationsCompleted() + 1; // plus the current one
+		MyLog.info(class_name, "newBestSolutionFound", "new best solution founded at iteration " + iterationsDone);
+		MyLog.info(class_name, "newBestSolutionFound", "new best solution cost:\n" + bestCost.toString());
 	}
 
 	/**
