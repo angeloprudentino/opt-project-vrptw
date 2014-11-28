@@ -19,6 +19,7 @@ public class GARoute extends GA {
     private static final double alpha = 0.54;
     private static final double beta = 0.30;
     private static final double gamma = 0.19;
+    private Instance instance;
 
     /**
      * @param chromosomeDim
@@ -46,6 +47,8 @@ public class GARoute extends GA {
 	
 	super(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations, numPrelimRuns,
 		maxPrelimGenerations, mutationProb, crossoverType, computeStatistics);
+	this.instance = instance;
+	
     }
 
     /** 
@@ -57,20 +60,15 @@ public class GARoute extends GA {
     	int v, c;
     	// TODO implement properly:
     	
-    	int NUM_VEHIC = 200;
-    	int NUM_CUST = 400;
-    	int RANDOMSEED = 666;
-    	Instance instance;
+    	int NUM_VEHIC = instance.getVehiclesNr();
+    	int NUM_CUST = instance.getCustomersNr();
+    	Random random = instance.getRandom();
     	
     	
     	boolean[] assignedCust = new boolean[NUM_VEHIC]; 
-    	ProtoChromosome temp = new ProtoChromosome();
+    	ProtoChromosome temp = new ProtoChromosome(instance.getVehiclesNr(), instance.getCustomersNr());
     	//number of not assigned customers:
     	int notAssigned;
-    	
-    	// TODO use the real random SEED.
-    	Random random = new Random();
-    	random.setSeed(RANDOMSEED);
     	
     	//for each chromosome to be generated (one comes from TS):
         for (int chrom = 0; chrom < populationDim-1; chrom++){
