@@ -113,6 +113,21 @@ public class ChromRoute extends Chromosome {
         for (iGene = 0; iGene < genes.length; iGene++)
             this.genes[iGene] = chromR.genes[iGene];
     }
+    
+    public int length(){
+    	return genes.length;
+    }
 
+	public int getPosition(Customer gene) {
+		for(int i = 0; i < genes.length; i++){
+			if(cmpGeneNumber(genes[i], gene) == true) return i;
+		}
+		return -1; //error code because this method have to find the value into the array
+	}
+	
+	public boolean cmpGeneNumber(Customer c1, Customer c2){
+		if(c1.getNumber() == (c2.getNumber())) return true;
+		return false;
+	}
 
 }
