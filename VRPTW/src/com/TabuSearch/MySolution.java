@@ -526,6 +526,8 @@ public class MySolution extends SolutionAdapter{
 					GACustArray[k] = currV.get(j);
 					k++;
 			}
+			if (k==tot)
+				break;
 			GACustArray[k]=DepotCust;
 			k++;
 		}
