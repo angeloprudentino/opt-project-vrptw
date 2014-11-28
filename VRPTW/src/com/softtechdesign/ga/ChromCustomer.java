@@ -183,6 +183,8 @@ public class ChromCustomer extends Chromosome {
 
         for (iGene = 0; iGene < genes.length; iGene++)
             this.genes[iGene] = chromR.genes[iGene];
+        
+        //TODO aggiornare tutti i parametri di costo con quelli del nuovo cromosoma
     }
     
 //    /**

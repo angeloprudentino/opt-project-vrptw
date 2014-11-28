@@ -32,10 +32,10 @@ public class MDVRPTW {
 			
 			startLog();
 			// check to see if an input file was specified
-			MyLog.info(class_name, "main", parameters.toString());
 			parameters.updateParameters(args);
-			
 			MyLog.info(class_name, "main", "parameters.updateParameters(args) => parameters set");
+			MyLog.info(class_name, "main", parameters.toString());
+			
 			if(parameters.getInputFileName() == null){
 				MyLog.err(class_name, "main", "parameters.getInputFileName() = null => You must specify an input file name");
 				return;
