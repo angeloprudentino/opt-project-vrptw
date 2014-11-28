@@ -6,6 +6,8 @@ package com.softtechdesign.ga;
 
 
 import java.util.Random;
+
+import com.mdvrp.Customer;
 import com.mdvrp.Instance;
 
 
@@ -137,7 +139,93 @@ public class GARoute extends GA {
      */
     @Override
     protected void doTwoPtCrossover(Chromosome Chrom1, Chromosome Chrom2) {
+    	ChromRoute parent1 = (ChromRoute)Chrom1;
+    	ChromRoute parent2 = (ChromRoute)Chrom2;
+    	ChromRoute child1 = null, child2=null;
+    	int dimAlphabet = ;				//IMPOSTARE UNA COSTANTE CON IL NUMERO DI CUSTUMERS
+    	pmX(parent1, parent2, child1, child2, dimAlphabet);
+    	Chrom1=child1;
+    	Chrom2=child2;
+    	
     }
+    
+    /** 
+     * @see partially mapped crossover pmX
+     * @author: Luca Boni
+     * @date: 28/11/2014
+     */
+	public static void pmX(	ChromRoute parent1,ChromRoute parent2,
+							ChromRoute child1,ChromRoute child2,
+							//int cutPoint1,int cutPoint2,
+							int dimAlphabet){
+		boolean[] usedValuesChild1 = new boolean[dimAlphabet];
+		boolean[] usedValuesChild2 = new boolean[dimAlphabet];
+		int arrayDimension = parent1.length();
+		int cutPoint1 = (int)Math.random()%arrayDimension;
+		int cutPoint2;
+		while((cutPoint2 = (int)Math.random()%arrayDimension) == cutPoint1); // to avoid cutPoint1 == cutPoint2
+
+	    try{
+	    	
+			//initialization of boolean arrays
+			for(int i=0; i<dimAlphabet; i++){
+				usedValuesChild1[i] = false;
+				usedValuesChild2[i] = false;
+				}
+			
+			//part between cut points
+			for(int i = cutPoint1; i < cutPoint2; i++){
+				child1.setGene(parent2.getGene(i), i);
+				usedValuesChild1[child1.getGene(i).getNumber()] = true;
+				child2.setGene(parent2.getGene(i), i);
+				usedValuesChild2[child2.getGene(i).getNumber()] = true;
+			}
+			
+			//part after second cut point
+			for(int i = cutPoint2; i < arrayDimension; i++){
+				
+				//about child 1
+				int pos = applyPmxRule(i, usedValuesChild1, parent1, parent2);
+				child1.setGene(parent1.getGene(pos), i);
+				usedValuesChild1[child1.getGene(pos).getNumber()] = true;
+				
+				//about child 2
+				pos = applyPmxRule(i, usedValuesChild2, parent2, parent1);
+				child2.setGene(parent2.getGene(pos), i);
+				usedValuesChild2[child2.getGene(pos).getNumber()] = true;
+			}
+			
+			//part before first cut point
+			for(int i=0; i<cutPoint1; i++){
+				
+				//about child 1
+				int pos = applyPmxRule(i, usedValuesChild1, parent1, parent2);
+				child1.setGene(parent1.getGene(pos), i);
+				usedValuesChild1[child1.getGene(pos).getNumber()] = true;
+				
+				//about child 2
+				pos = applyPmxRule(i, usedValuesChild2, parent2, parent1);
+				child2.setGene(parent2.getGene(pos), i);
+				usedValuesChild2[child2.getGene(pos).getNumber()] = true;
+			}
+		}catch(GAException e){
+			System.out.println(e);
+		}
+	}
+
+	public static int applyPmxRule (int i, boolean[] booleanArray, ChromRoute parentA, ChromRoute parentB) throws GAException{
+		int pos = i;
+		while(alreadyUsed(booleanArray,parentA.getGene(pos)) == true){
+			pos = parentB.getPosition(parentA.getGene(pos));
+			if(pos < 0) throw new GAException("Crossover error"); 
+		}
+		return pos;
+	}
+
+	private static boolean alreadyUsed(boolean[] array, Customer c) {
+		int value = c.getNumber();
+		return array[value];
+	}
 
     /** 
      * @see com.softtechdesign.ga.GA#doUniformCrossover(com.softtechdesign.ga.Chromosome, com.softtechdesign.ga.Chromosome)
