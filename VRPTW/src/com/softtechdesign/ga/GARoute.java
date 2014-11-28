@@ -4,7 +4,11 @@
  */
 package com.softtechdesign.ga;
 
+
+import java.util.Random;
 import com.mdvrp.Instance;
+
+
 
 /**
  * @author Angelo Prudentino
@@ -49,7 +53,72 @@ public class GARoute extends GA {
      */
     @Override
     protected void initPopulation() {
+    	// TODO gestire il caso in cui non riesca a trovare soluzioni feasible almeno in tempo utile
+    	int v, c;
+    	// TODO implement properly:
+    	
+    	int NUM_VEHIC = 200;
+    	int NUM_CUST = 400;
+    	int RANDOMSEED = 666;
+    	Instance instance;
+    	
+    	
+    	boolean[] assignedCust = new boolean[NUM_VEHIC]; 
+    	ProtoChromosome temp = new ProtoChromosome();
+    	//number of not assigned customers:
+    	int notAssigned;
+    	
+    	// TODO use the real random SEED.
+    	Random random = new Random();
+    	random.setSeed(RANDOMSEED);
+    	
+    	//for each chromosome to be generated (one comes from TS):
+        for (int chrom = 0; chrom < populationDim-1; chrom++){
+        	notAssigned = NUM_CUST;
+        	
+        	//until all customers are assigned:
+        	while(notAssigned > 0){
+        		//find a cust which is still not served
+        		do {
+	            	c = random.nextInt(NUM_CUST);
+        		} while (assignedCust[c] == false);
+        		// TODO: optimize the research for nearly empty vector
+            		
+        		//chose a random vehicle to start
+            	v = random.nextInt(NUM_VEHIC);
+        		
+        		//cycle through each vehicle
+        		for (int i = 0; i<NUM_VEHIC; i++) {
+        			//try to assign c to v:
+        			//verify the Capacity & Duration.
+        			if(){
+	        			//if it's ok to be added, make it active (add to temp) 
+	        			temp.addGene(v, instance.getCustomerByNumID(c));
+        				//disable customer (already served) setting the assignedCust
+        				assignedCust[c] = true;
+        				notAssigned--;
+        				break;
+	        		}
+        			//if it's not ok to be added
+        			//cycle through the others vehicle v
+        			v=(v+1)%NUM_VEHIC;
+        		}
+        		//if customer is not assignable, then the protosolution must be rebuilt from scratch.
+        		if (assignedCust[c] == false){
+        			//repeat last iteration of chrom for.
+        			chrom--;
+        			break;
+        		}
+        		//if customer was assigned we can go on with the next customer
+        	}
+        	
+        	//if it's a feasible solution then build the chromosome from ProtoChromosome
+        	if (notAssigned == 0){
+        		this.chromosomes[chrom] = temp.toChromosome();
+            	this.chromosomes[chrom].fitness = getFitness(chrom);
+        	}
     }
+}
 
     /** 
      * @see com.softtechdesign.ga.GA#doRandomMutation(int)

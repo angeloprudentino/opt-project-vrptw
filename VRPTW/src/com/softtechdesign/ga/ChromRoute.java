@@ -153,7 +153,7 @@ public class ChromRoute extends Chromosome {
         for (iGene = 0; iGene < genes.length; iGene++)
             this.genes[iGene] = chromR.genes[iGene];
     }
-<<<<<<< .mine    
+    
     /**
      * create a new list of genes starting from a string representation
      * @param sGenes --> list of genes in string format "i - k - j"
@@ -170,11 +170,11 @@ public class ChromRoute extends Chromosome {
 	}
 	    
     }
-=======    
+    
     public int length(){
     	return genes.length;
     }
->>>>>>> .theirs
+
 	public int getPosition(Customer gene) {
 		for(int i = 0; i < genes.length; i++){
 			if(cmpGeneNumber(genes[i], gene) == true) return i;
