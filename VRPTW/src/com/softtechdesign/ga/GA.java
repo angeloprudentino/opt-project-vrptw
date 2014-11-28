@@ -368,6 +368,7 @@ public abstract class GA implements Runnable
             System.out.println("INITIAL POPULATION (NO PRELIM RUNS):");
 
         //Add Preliminary Chromosomes to list box
+        initPopulation(); //Angelo -> 28/11/2014
         addChromosomesToLog(0, chromosomeDim);
 
         iGen = 0;
@@ -555,7 +556,12 @@ public abstract class GA implements Runnable
         this.chromNextGen[iCnt].copyChromGenes(this.chromosomes[this.bestFitnessChromIndex]);
         iCnt++;
 
-        if (this instanceof GAString)
+        if (this instanceof GARoute)
+        {
+            Chrom1 = new ChromCustomer(chromosomeDim);
+            Chrom2 = new ChromCustomer(chromosomeDim);
+        }
+        else if (this instanceof GAString)
         {
             Chrom1 = new ChromChars(chromosomeDim);
             Chrom2 = new ChromChars(chromosomeDim);

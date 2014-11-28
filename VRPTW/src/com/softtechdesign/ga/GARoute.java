@@ -4,11 +4,17 @@
  */
 package com.softtechdesign.ga;
 
+import com.mdvrp.Instance;
+
 /**
  * @author Angelo Prudentino
  * @date 22/nov/2014
  */
 public class GARoute extends GA {
+
+    private static final double alpha = 0.54;
+    private static final double beta = 0.30;
+    private static final double gamma = 0.19;
 
     /**
      * @param chromosomeDim
@@ -22,9 +28,18 @@ public class GARoute extends GA {
      * @param crossoverType
      * @param computeStatistics
      */
-    public GARoute(int chromosomeDim, int populationDim, double crossoverProb, int randomSelectionChance,
-	    int maxGenerations, int numPrelimRuns, int maxPrelimGenerations, double mutationProb, int crossoverType,
-	    boolean computeStatistics) {
+    public GARoute(int chromosomeDim, 
+	           int populationDim, 
+	           double crossoverProb, 
+	           int randomSelectionChance,
+	           int maxGenerations, 
+	           int numPrelimRuns, 
+	           int maxPrelimGenerations, 
+	           double mutationProb, 
+	           int crossoverType,
+	           boolean computeStatistics,
+	           Instance instance) {
+	
 	super(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations, numPrelimRuns,
 		maxPrelimGenerations, mutationProb, crossoverType, computeStatistics);
     }
@@ -69,7 +84,11 @@ public class GARoute extends GA {
      */
     @Override
     protected double getFitness(int iChromIndex) {
-	return 0;
+	
+	ChromCustomer chrom = (ChromCustomer) chromosomes[iChromIndex];
+	double total = chrom.getTravelTime() + alpha * chrom.getLoadViol() + beta * chrom.getDurationViol() + gamma * chrom.getTwViol();
+	
+	return 1/total;
     }
 
 }
