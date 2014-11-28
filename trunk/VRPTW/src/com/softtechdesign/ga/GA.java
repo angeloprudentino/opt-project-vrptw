@@ -543,7 +543,7 @@ public abstract class GA implements Runnable
      * This way an extremely fit chromosome is never lost from our chromosome pool.
      */
     void doGeneticMating()
-    {
+    { // TODO modificare affinchè faccia un numero arbitrario di crossover
         int iCnt, iRandom;
         int indexParent1 = -1, indexParent2 = -1;
         Chromosome Chrom1, Chrom2;
