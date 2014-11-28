@@ -32,6 +32,7 @@ public class MySolution extends SolutionAdapter{
 	private int[][][] Bs;
 	private List<MySwapMove> moves = new ArrayList<MySwapMove>();
 	private List<Cost> costs = new ArrayList<Cost>();
+	private Customer GACustArray[];
 	
 	public MySolution() {} // Appease clone()
 
@@ -502,19 +503,23 @@ public class MySolution extends SolutionAdapter{
 		MySolution.iterationsDone = iterationsDone;
 	}
 	
+	/**
+	 * Tabu Search format (routes matrix) to Genetic Algorithm format (linear vector)
+	 */	
 	public Customer[] ConvertTSGA(){
 		int i=0, j=0, k=0, tot=0;
 		List<Customer> currV;
 		Customer DepotCust = new Customer();
 		DepotCust.setNumber(0);
-		//Numero totale di elementi
 		for (i=0; i<instance.getVehiclesNr(); i++){
 			for (j=0; j<routes[0][i].getCustomersLength() ; j++) {
 					tot++;
 			}
 			tot++;
 		}
-		Customer GACustArray[] = new Customer[tot];
+		GACustArray = new Customer[tot];
+		GACustArray[k]=DepotCust;
+		k++;
 		for (i=0; i<instance.getVehiclesNr(); i++){
 			currV = routes[0][i].getCustomers();
 			for (j=0; j<routes[0][i].getCustomersLength() ; j++) {
@@ -527,5 +532,23 @@ public class MySolution extends SolutionAdapter{
 		
 		return GACustArray;
 	}
-
+	
+	/**
+	 * Genetic Algorithm format (linear vector) to Tabu Search format (routes matrix)
+	 */	
+	public Route[][] ConvertGATS (){
+		ArrayList<Customer> tempCust = new ArrayList<Customer>();
+		//Route[][] froutes = new Route[instance.getDepotsNr()][instance.getVehiclesNr()];
+		int k=0;
+		for (int i=1; i<GACustArray.length; i++){
+			 if (GACustArray[i].getNumber()==0){
+				 k++;
+				 routes[0][k].setCustomers(tempCust);
+				 tempCust.clear();
+				 continue;
+			 }
+			 tempCust.add(GACustArray[i]);
+		}			 
+		return routes;	
+	}
 }
