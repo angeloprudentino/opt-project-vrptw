@@ -142,8 +142,8 @@ public class GARoute extends GA {
     	ChromCustomer parent1 = (ChromCustomer)Chrom1;
     	ChromCustomer parent2 = (ChromCustomer)Chrom2;
     	ChromCustomer child1 = null, child2=null;
-    	int dimAlphabet = 200;				//TODO IMPOSTARE UNA COSTANTE CON IL NUMERO DI CUSTUMERS
-    	pmX(parent1, parent2, child1, child2, dimAlphabet);
+//    	int dimAlphabet = 200;				//TODO IMPOSTARE UNA COSTANTE CON IL NUMERO DI CUSTUMERS
+    	pmX(parent1, parent2, child1, child2, populationDim);	//è giusto il valore contenuto in populationDim??
     	Chrom1=child1;
     	Chrom2=child2;
     	
