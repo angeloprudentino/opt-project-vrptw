@@ -20,6 +20,7 @@ public class GARoute extends GA {
     private static final double alpha = 0.54;
     private static final double beta = 0.30;
     private static final double gamma = 0.19;
+	private static final double LOAD_RATIO = 0.10; //used in initPopualtion
     private Instance instance;
 
     /**
@@ -57,10 +58,9 @@ public class GARoute extends GA {
      */
     @Override
     protected void initPopulation() {
-    	// TODO gestire il caso in cui non riesca a trovare soluzioni feasible almeno in tempo utile
-    	int v, c;
-    	// TODO implement properly:
-    	
+    	// TODO if i can't find any feasible solution??
+    	int v;
+    	int c = 0;
     	int NUM_VEHIC = instance.getVehiclesNr();
     	int NUM_CUST = instance.getCustomersNr();
     	Random random = instance.getRandom();
@@ -68,32 +68,43 @@ public class GARoute extends GA {
     	
     	boolean[] assignedCust = new boolean[NUM_VEHIC]; 
     	//ProtoChromosome temp = new ProtoChromosome(NUM_VEHIC, NUM_CUST);
-    	ProtoChromosome temp = new ProtoChromosome(instance.getVehiclesNr(), instance.getCustomersNr());
+    	ProtoChromosome temp = new ProtoChromosome(instance);
     	//number of not assigned customers:
     	int notAssigned;
     	
-    	//for each chromosome to be generated (one comes from TS):
+    	//for each chromosome to be generated (one comes from TS greedy method):
         for (int chrom = 0; chrom < populationDim-1; chrom++){
         	notAssigned = NUM_CUST;
+        	for(int i=0; i<NUM_VEHIC; i++)
+        		assignedCust[i] = false;
         	
         	//until all customers are assigned:
         	while(notAssigned > 0){
         		//find a cust which is still not served
-        		do {
-	            	c = random.nextInt(NUM_CUST);
-        		} while (assignedCust[c] == false);
-        		// TODO: optimize the research for nearly empty vector
+        		if (notAssigned/NUM_CUST < LOAD_RATIO) {
+        			//choose randomly
+	        		do {
+		            	c = random.nextInt(NUM_CUST);
+	        		} while (assignedCust[c] == false);
+        		}
+        		else {
+        			//scan the vector
+        			do {
+        				c = (++c) % NUM_CUST;
+        			} while (assignedCust[c] == false);
+        		}
             		
         		//chose a random vehicle to start
             	v = random.nextInt(NUM_VEHIC);
         		
         		//cycle through each vehicle
         		for (int i = 0; i<NUM_VEHIC; i++) {
-        			//try to assign c to v:
+        			Customer chosenCust = instance.getCustomerByNumID(c);
+        			
         			//verify the Capacity & Duration.
-        			if(){
-	        			//if it's ok to be added, make it active (add to temp) 
-	        			temp.addGene(v, instance.getCustomerByNumID(c));
+        			if(temp.checkCapacity(v, chosenCust) && temp.checkDuration(v, chosenCust)){
+	        			//if it's ok to be added, assign it (add to temp) 
+	        			temp.addGene(v, chosenCust);
         				//disable customer (already served) setting the assignedCust
         				assignedCust[c] = true;
         				notAssigned--;
