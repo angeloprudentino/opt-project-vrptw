@@ -134,7 +134,7 @@ public class MDVRPTW {
         		    if (TSsearch.feasibleRoutes[i][j].getCustomersLength() > 0)
         			routesNr++;
         	    // Print results
-        	    String outSol = String.format("%s; %5.2f; %d; %4d\r\n", instance.getParameters().getInputFileName(),
+        	    String outSol = String.format("param:%s;  cost:%5.2f;  time:%d;  veicles:%4d\r\n", instance.getParameters().getInputFileName(),
         		    TSsearch.feasibleCost.total, duration.getSeconds(), routesNr);
         	    System.out.println(outSol);
         	    FileWriter fw = new FileWriter(parameters.getOutputFileName(), true);
