@@ -1,11 +1,16 @@
 package com.mdvrp;
 
 import com.TabuSearch.MovesType;
+import com.softtechdesign.ga.Crossover;
 
 public class Parameters {
-	private MovesType movesType;
+	
+	// general parameters
 	private String inputFileName;
 	private String outputFileName;
+	
+	// TS specific parameters
+	private MovesType movesType;
 	private double precision;
 	private int iterations;
 	private int startClient;
@@ -13,12 +18,29 @@ public class Parameters {
 	private int tabuTenure;
 	private boolean variableTenure;
 	private String currDir;
+	
+	// GA specific parameters 
+	int chromosomeDim;
+    int populationDim;
+    double crossoverProb;
+    int randomSelectionChance;
+    int maxGenerations;
+    int numPrelimRuns;
+    int maxPrelimGenerations;
+    double mutationProb;
+    int crossoverType;
+    boolean computeStatistics;
+	
 	MyLogger MyLog = new MyLogger(Parameters.class.getName());
 
 	
 	public Parameters() {
+		
+		// general parameters
 		currDir 			= System.getProperty("user.dir");
 		outputFileName    	= currDir + "/output/solutions.csv";
+		
+		// TS specific parameters
 		movesType         	= MovesType.SWAP;
 		precision         	= 1E-2;
 		iterations        	= 1000;
@@ -26,10 +48,26 @@ public class Parameters {
 		tabuTenure        	= -1;
 		randomSeed		  	= -1;
 		variableTenure    	= false;
+		
+		// GA specific parameters
+		//TODO decide the default value for all the GA specific parameters
+//		chromosomeDim = 
+//		populationDim =
+//		crossoverProb = 
+//		randomSelectionChance = 
+//		maxGenerations = 2000;
+//		numPrelimRuns = 0;
+//		maxPrelimGenerations = 2000;
+//		mutationProb =
+//		crossoverType = Crossover.ctTwoPoint;
+//		computeStatistics = true;
+				
+		
 	}
 	
 	public void updateParameters(String[] args) throws Exception
 	{
+		//TODO decide format for GA specific parameters in command line
 		if(args.length % 2 == 0){
 			for(int i = 0; i < args.length; i += 2){
 				switch (args[i]) {
@@ -80,6 +118,8 @@ public class Parameters {
 	}
 	
 	public String toString(){
+		//TODO modify to print also GA specific parameters
+		
 		StringBuffer print = new StringBuffer();
 		print.append("\n" + "--- Parameters: -------------------------------------");
 		print.append("\n" + "| Moves Type= " + movesType);
