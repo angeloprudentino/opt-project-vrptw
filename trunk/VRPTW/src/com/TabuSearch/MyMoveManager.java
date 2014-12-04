@@ -16,7 +16,7 @@ public class MyMoveManager implements MoveManager {
     }
     
     public Move[] getAllMoves( Solution solution ) { 
-    	MySolution sol = ((MySolution)solution);
+    	MyTSsolution sol = ((MyTSsolution)solution);
      
     	switch (movesType) {
 		case SWAP:
@@ -33,7 +33,7 @@ public class MyMoveManager implements MoveManager {
      * @param solution
      * @return
      */
-    public Move[] getSwapMoves(MySolution solution){
+    public Move[] getSwapMoves(MyTSsolution solution){
     	 Route[][] routes = solution.getRoutes();
          Move[] buffer = new Move[ getInstance().getCustomersNr() * getInstance().getVehiclesNr() * getInstance().getDepotsNr()];
          int nextBufferPos = 0;

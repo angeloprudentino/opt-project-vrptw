@@ -27,7 +27,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
      * of moves.
      */
     public double[] evaluate(Solution solution, Move proposedMove) {
-    	MySolution sol = (MySolution)solution;
+    	MyTSsolution sol = (MyTSsolution)solution;
     	double obj;
         // If move is null, calculate distance from scratch
         if( proposedMove == null ) {
@@ -79,7 +79,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
         
     }   // end evaluate
     
-    private Cost getTotalCostVariation(MySolution sol, MySwapMove move,
+    private Cost getTotalCostVariation(MyTSsolution sol, MySwapMove move,
 			Cost varInsertCost, Cost varDeleteCost) 
     {
     	Cost varCost = new Cost(sol.getCost());
@@ -109,7 +109,7 @@ public class MyObjectiveFunction implements ObjectiveFunction {
      * @param solution
      */
     private void evaluateAbsolutely(Solution solution){
-    	MySolution sol = (MySolution)solution;
+    	MyTSsolution sol = (MyTSsolution)solution;
     	Route route;
     	
     	sol.getCost().initialize();

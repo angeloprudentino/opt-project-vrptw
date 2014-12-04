@@ -3,19 +3,17 @@ package com.mdvrp;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.TabuSearch.MySolution;
-import com.mdvrp.Instance;
-import com.mdvrp.Customer;
+import com.TabuSearch.MyTSsolution;
 
 
 
-public abstract class MyConverter {
+public class MyConverter {
 
 	/**
 	 * Tabu Search format (routes matrix) to Genetic Algorithm format (linear vector)
 	 */	
 	@SuppressWarnings("static-access")
-	public Customer[] ConvertTSGA(MySolution sol){
+	public static Customer[] ConvertTSGA(MyTSsolution sol){
 		int i=0, j=0, k=0, tot=0;
 		Route[][] routes = sol.getRoutes();
 		List<Customer> currV;
@@ -54,7 +52,7 @@ public abstract class MyConverter {
 	/**
 	 * Genetic Algorithm format (linear vector) to Tabu Search format (routes matrix)
 	 */	
-	public Route[][] ConvertGATS (MySolution sol){
+	public static Route[][] ConvertGATS (MyTSsolution sol){
 		ArrayList<Customer> tempCust = new ArrayList<Customer>();
 		//Route[][] froutes = new Route[instance.getDepotsNr()][instance.getVehiclesNr()];
 		int k=0;

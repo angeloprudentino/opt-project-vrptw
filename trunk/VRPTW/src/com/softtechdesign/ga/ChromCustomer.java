@@ -23,17 +23,17 @@ public class ChromCustomer extends Chromosome {
 
     /** array of genes which comprise this Chromosome */
     private Customer[] genes;
-    private Depot[] depots; 		 //some customers are actually depots
+    private Depot[] depots; 		     //some customers are actually depots
     
     private Instance instance;           // Reference to the instance of the problem 
-    private Cost cost;			 // Cost of the entire chromosome
+    private Cost cost;			         // Cost of the entire chromosome
     
     
     /**
      * Creates new Customer array of genes 
      * @param iGenesDim the size of the array of genes
      */
-    public ChromCustomer(int iGenesDim)
+    protected ChromCustomer(int iGenesDim)
     {
         genes = new Customer[iGenesDim];
         cost = new Cost();
@@ -42,7 +42,7 @@ public class ChromCustomer extends Chromosome {
     /**
      * @param instance of the problem
      */
-    public void setInstance(Instance instance) {
+    protected void setInstance(Instance instance) {
         this.instance = instance;
         buildDepots();
     }
@@ -59,25 +59,16 @@ public class ChromCustomer extends Chromosome {
     }
 
     /**
-     * Returns the array of genes as a string
-     * @return String
-     */
-    public String toString()
-    {
-        return (getGenesAsStr());
-    }
-
-    /**
      * @return the cost
      */
-    public Cost getCost() {
+    protected Cost getCost() {
         return cost;
     }
 
     /**
      * @return the instance
      */
-    public Instance getInstance() {
+    protected Instance getInstance() {
         return instance;
     }
 
@@ -87,7 +78,7 @@ public class ChromCustomer extends Chromosome {
      * @param geneIndex index of gene
      */
     
-    public void setGene(Customer gene, int geneIndex)
+    protected void setGene(Customer gene, int geneIndex)
     {
         genes[geneIndex] = gene;
     }
@@ -97,7 +88,7 @@ public class ChromCustomer extends Chromosome {
      * @param chromosome chromosome to compare
      * @return int
      */
-    public int getNumGenesInCommon(Chromosome chromosome)
+    protected int getNumGenesInCommon(Chromosome chromosome)
     {
         int numGenesInCommon = 0;
         ChromCustomer chromR = (ChromCustomer)chromosome;
@@ -114,37 +105,39 @@ public class ChromCustomer extends Chromosome {
      * Get a reference to the genes array
      * @return String[]
      */
-    public Customer[] getGenes()
+    protected Customer[] getGenes()
     {
         return(genes);
     }
     
     /**
      * return the array of genes as a string; 
-     * Example: "0 - 1 - 2 - 3|0 - 4 - 5|"
-     * 
+     * Example: " [0] = 0 - 1 - 2 - 3
+     *            [1] = 4 - 5 -6 "
      * @return String
      */
-    public String getGenesAsStr()
+    protected String getGenesAsStr()
     {
         int genesLength = genes.length;
         
-        StringBuffer sb = new StringBuffer(genesLength);
+        StringBuffer sb = new StringBuffer("");
         for (int i = 0; i < genesLength; i++)
         {
+        	if(genes[i].getNumber() == 0)
+        		sb.append("\n  [" + i + "] = ");
             sb.append(genes[i].toString());
-            if (i < genesLength - 1)
-                sb.append("|");
         }
+        sb.append("\n");
         return (sb.toString());
     }
 
+    
     /**
      * return the gene indexed by iGene as a char
      * @param iGene
      * @return String
      */
-    public Customer getGene(int iGene)
+    protected Customer getGene(int iGene)
     {
         return (this.genes[iGene]);
     }
@@ -153,7 +146,7 @@ public class ChromCustomer extends Chromosome {
      * Copy the genes from the given chromosome over the existing genes
      * @param chromosome
      */
-    public void copyChromGenes(Chromosome chromosome)
+    protected void copyChromGenes(Chromosome chromosome)
     {
         int iGene;
         ChromCustomer chromC = (ChromCustomer)chromosome;
@@ -236,11 +229,11 @@ public class ChromCustomer extends Chromosome {
 	return depots[DEPOT_NUM-1]; //TODO at the moment i manage only the case of one depot
     }
 
-    public int length() {
+    protected int length() {
 	return genes.length;
     }
 
-    public int getPosition(Customer gene) {
+    protected int getPosition(Customer gene) {
 	for (int i = 0; i < genes.length; i++) {
 	    if (genes[i].equals(gene) == true)
 		return i;
