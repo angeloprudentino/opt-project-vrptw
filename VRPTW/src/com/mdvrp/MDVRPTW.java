@@ -95,14 +95,17 @@ public class MDVRPTW {
         	    MyLog.info(class_name, "main", "new MySearchProgram(instance, initialSol, moveManager, objFunc, tabuList, false, outPrintSream) => TS search program created");
         
         	    // Init memory for Genetic Algorithm
-/*        	    MyLog.info(class_name, "main", "creating required GA data structure");
+        	    MyLog.info(class_name, "main", "creating required GA data structure");
         	    //TODO enable the GA constructor
         	    //GAsearch = new GARoute(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations, numPrelimRuns, maxPrelimGenerations, mutationProb, crossoverType, computeStatistics, instance);
         	    MyLog.info(class_name, "main", "new GARoute(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations, numPrelimRuns, maxPrelimGenerations, mutationProb, crossoverType, computeStatistics, instance) => GA search program created");
         	   
-        	    initial_TS_Sol.ConvertTSGA(); //TODO fix this call
+        	    initial_GA_sol = new MyGAsolution(instance);
+        	    best_GA_sol = new MyGAsolution(instance);
+        	    //initial_TS_Sol.ConvertTSGA(); //TODO fix this call
         	    Thread GAThread = new Thread(GAsearch);
         	    GAThread.start();
+        	    GAThread.
         	    MyLog.info(class_name, "main", "GAThread.start(); => START");
         	    //wait for the search thread to finish
         	    try {

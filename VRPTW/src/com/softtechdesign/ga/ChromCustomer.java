@@ -19,7 +19,7 @@ import com.mdvrp.Instance;
  */
 public class ChromCustomer extends Chromosome {
 
-    private static final int DEPOT_NUM = 0;
+    private static final int DEPOT = 0;
 
     /** array of genes which comprise this Chromosome */
     private Customer[] genes;
@@ -33,17 +33,11 @@ public class ChromCustomer extends Chromosome {
      * Creates new Customer array of genes 
      * @param iGenesDim the size of the array of genes
      */
-    protected ChromCustomer(int iGenesDim)
+    protected ChromCustomer(int iGenesDim, Instance instance)
     {
-        genes = new Customer[iGenesDim];
-        cost = new Cost();
-    }
-    
-    /**
-     * @param instance of the problem
-     */
-    protected void setInstance(Instance instance) {
+        this.genes = new Customer[iGenesDim];
         this.instance = instance;
+        this.cost = new Cost();
         buildDepots();
     }
     
@@ -175,8 +169,8 @@ public class ChromCustomer extends Chromosome {
 	    
 	    // add travel time to the chromosome
 	    if (k == 0 && customerK.getNumber() == 0) { // customerK.getNumber() = 0 --> Depot
-		getCost().travelTime += getInstance().getTravelTime(DEPOT_NUM, customerK.getNumber());
-		totalTime += getInstance().getTravelTime(DEPOT_NUM, customerK.getNumber());
+		getCost().travelTime += getInstance().getTravelTime(DEPOT, customerK.getNumber());
+		totalTime += getInstance().getTravelTime(DEPOT, customerK.getNumber());
 	    } else {
 		getCost().travelTime += getInstance().getTravelTime(customerK_1.getNumber(), customerK.getNumber());
 		totalTime += getInstance().getTravelTime(customerK_1.getNumber(), customerK.getNumber());
@@ -204,8 +198,8 @@ public class ChromCustomer extends Chromosome {
 	
 	    if (k != 0 && customerK.getNumber() == 0) {// k!=0 means the end of // one route
 		// add the distance to return to depot: from last node to depot
-		totalTime += getInstance().getTravelTime(customerK_1.getNumber(), DEPOT_NUM);
-		getCost().travelTime += getInstance().getTravelTime(customerK_1.getNumber(), DEPOT_NUM);
+		totalTime += getInstance().getTravelTime(customerK_1.getNumber(), DEPOT);
+		getCost().travelTime += getInstance().getTravelTime(customerK_1.getNumber(), DEPOT);
 		// add the depot time window violation if any
 		twViol = Math.max(0, totalTime - getDepot().getEndTw());
 		getCost().addTWViol(twViol);
@@ -226,7 +220,7 @@ public class ChromCustomer extends Chromosome {
      * @return
      */
     private Depot getDepot() {
-	return depots[DEPOT_NUM-1]; //TODO at the moment i manage only the case of one depot
+	return depots[DEPOT-1]; //TODO at the moment i manage only the case of one depot
     }
 
     protected int length() {

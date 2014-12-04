@@ -30,11 +30,12 @@ public class MyGAsolution {
 	/**
 	 * @param instance of the problem
 	 */
-	public MyGAsolution(Instance instance, int chromosomeDim) {
+	public MyGAsolution(Instance instance) {
 		super();
 		this.instance = instance;
-		solution = new ChromCustomer(chromosomeDim);
-		solution.setInstance(instance);
+		// I manage only the case with 1 depot
+		int chromosomeDim = instance.getCustomersNr() + instance.getVehiclesNr();
+		solution = new ChromCustomer(chromosomeDim, instance);
 	}
 
 	/**

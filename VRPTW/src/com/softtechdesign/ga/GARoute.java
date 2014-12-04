@@ -24,7 +24,7 @@ public class GARoute extends GA {
 	private static final double LOAD_RATIO = 0.10; //used in initPopualtion
     
 	private Instance instance;
-    private MyGAsolution best_sol; //TODO we need to store the best feasible solution of the GA at each iteration
+    private MyGAsolution best_feasible_sol; //TODO we need to store the best feasible solution of the GA at each iteration
 
     /**
      * @param chromosomeDim
@@ -52,8 +52,10 @@ public class GARoute extends GA {
 	
 		super(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations, numPrelimRuns,
 			maxPrelimGenerations, mutationProb, crossoverType, computeStatistics);
+		super.setInstance(instance);
+		
 		this.instance = instance;
-		this.best_sol = new MyGAsolution(instance, chromosomeDim);
+		this.best_feasible_sol = new MyGAsolution(instance);
 		
     }
 
@@ -267,14 +269,14 @@ public class GARoute extends GA {
 		 * @return the best_sol
 		 */
 		public MyGAsolution getBestSol() {
-			return best_sol;
+			return best_feasible_sol;
 		}
 
 		/**
 		 * @param best_sol -> the best fesible sol from GA
 		 */
 		public void setBestSol(MyGAsolution best_sol) {
-			this.best_sol = best_sol;
+			this.best_feasible_sol = best_sol;
 		}
 
 }
