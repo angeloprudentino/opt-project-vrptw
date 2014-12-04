@@ -13,9 +13,9 @@ import com.mdvrp.Route;
 import com.mdvrp.Vehicle;
 
 @SuppressWarnings("serial")
-public class MySolution extends SolutionAdapter{
+public class MyTSsolution extends SolutionAdapter{
 	
-	private static String class_name = MySolution.class.getName();
+	private static String class_name = MyTSsolution.class.getName();
 	private static MyLogger MyLog = new MyLogger(class_name);
 
 	private static Instance instance;
@@ -34,10 +34,10 @@ public class MySolution extends SolutionAdapter{
 	private List<Cost> costs = new ArrayList<Cost>();
 	private Customer GACustArray[];
 	
-	public MySolution() {} // Appease clone()
+	public MyTSsolution() {} // Appease clone()
 
-	public MySolution(Instance instance) {
-		MySolution.setInstance(instance);
+	public MyTSsolution(Instance instance) {
+		MyTSsolution.setInstance(instance);
 		cost = new Cost();
 		initializeRoutes(instance);
 		MyLog.warning(class_name, "constructor", "initializeRoutes(instance)");
@@ -55,14 +55,14 @@ public class MySolution extends SolutionAdapter{
     	upLimit = 10000000;
     	resetValue = 0.1;
     	feasibleIndex = 0;
-    	MySolution.setIterationsDone(0);
+    	MyTSsolution.setIterationsDone(0);
     	Bs = new int[instance.getCustomersNr()][instance.getVehiclesNr()][instance.getDepotsNr()];		
 	}
 	
 	
 	public Object clone()
     {   
-        MySolution copy = (MySolution)super.clone();
+        MyTSsolution copy = (MyTSsolution)super.clone();
         Route[][] routescopy = new Route[this.routes.length][];
         for (int i = 0; i < this.routes.length; ++i) {
         	routescopy[i] = new Route[this.routes[i].length];
@@ -486,7 +486,7 @@ public class MySolution extends SolutionAdapter{
 	 * @param instance the instance to set
 	 */
 	public static void setInstance(Instance instance) {
-		MySolution.instance = instance;
+		MyTSsolution.instance = instance;
 	}
 
 	/**
@@ -500,7 +500,7 @@ public class MySolution extends SolutionAdapter{
 	 * @param iterationsDone the iterationsDone to set
 	 */
 	public static void setIterationsDone(int iterationsDone) {
-		MySolution.iterationsDone = iterationsDone;
+		MyTSsolution.iterationsDone = iterationsDone;
 	}
 
 	/**

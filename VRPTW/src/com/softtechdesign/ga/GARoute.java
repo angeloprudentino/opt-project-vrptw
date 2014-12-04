@@ -6,6 +6,7 @@ package com.softtechdesign.ga;
 
 
 import java.util.Random;
+
 import com.mdvrp.Customer;
 import com.mdvrp.Instance;
 
@@ -21,7 +22,9 @@ public class GARoute extends GA {
     private static final double beta = 0.30;
     private static final double gamma = 0.19;
 	private static final double LOAD_RATIO = 0.10; //used in initPopualtion
-    private Instance instance;
+    
+	private Instance instance;
+    private MyGAsolution best_sol; //TODO we need to store the best feasible solution of the GA at each iteration
 
     /**
      * @param chromosomeDim
@@ -36,21 +39,22 @@ public class GARoute extends GA {
      * @param computeStatistics
      */
     public GARoute(int chromosomeDim, 
-	           int populationDim, 
-	           double crossoverProb, 
-	           int randomSelectionChance,
-	           int maxGenerations, 
-	           int numPrelimRuns, 
-	           int maxPrelimGenerations, 
-	           double mutationProb, 
-	           int crossoverType,
-	           boolean computeStatistics,
-	           Instance instance) {
+		           int populationDim, 
+		           double crossoverProb, 
+		           int randomSelectionChance,
+		           int maxGenerations, 
+		           int numPrelimRuns, 
+		           int maxPrelimGenerations, 
+		           double mutationProb, 
+		           int crossoverType,
+		           boolean computeStatistics,
+		           Instance instance) {
 	
-	super(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations, numPrelimRuns,
-		maxPrelimGenerations, mutationProb, crossoverType, computeStatistics);
-	this.instance = instance;
-	
+		super(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations, numPrelimRuns,
+			maxPrelimGenerations, mutationProb, crossoverType, computeStatistics);
+		this.instance = instance;
+		this.best_sol = new MyGAsolution(instance, chromosomeDim);
+		
     }
 
     /** 
@@ -143,6 +147,7 @@ public class GARoute extends GA {
      */
     @Override
     protected void doOnePtCrossover(Chromosome Chrom1, Chromosome Chrom2) {
+    	//not used
     }
 
     /** 
@@ -243,6 +248,7 @@ public class GARoute extends GA {
          */
         @Override
         protected void doUniformCrossover(Chromosome Chrom1, Chromosome Chrom2) {
+        	//not used
         }
     
         /** 
@@ -256,5 +262,19 @@ public class GARoute extends GA {
     	
     	return 1/total;
         }
+
+		/**
+		 * @return the best_sol
+		 */
+		public MyGAsolution getBestSol() {
+			return best_sol;
+		}
+
+		/**
+		 * @param best_sol -> the best fesible sol from GA
+		 */
+		public void setBestSol(MyGAsolution best_sol) {
+			this.best_sol = best_sol;
+		}
 
 }

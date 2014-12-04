@@ -36,7 +36,7 @@ public class MySwapMove implements ComplexMove {
      */
     public void operateOn( Solution solution )
     {
-    	MySolution sol = (MySolution)solution;
+    	MyTSsolution sol = (MyTSsolution)solution;
     	Route insertRoute = sol.getRoute(insertDepotNr, insertRouteNr);
     	Route deleteRoute = sol.getRoute(deleteDepotNr, deleteRouteNr);
     	Cost initialInsertCost = new Cost(insertRoute.getCost());
@@ -67,7 +67,7 @@ public class MySwapMove implements ComplexMove {
 		return new int[]{ insertDepotNr, insertRouteNr, customer.getNumber(), 0, 0};
 	}
 	
-    private void evaluateTotalCostVariation(MySolution sol, MySwapMove move,
+    private void evaluateTotalCostVariation(MyTSsolution sol, MySwapMove move,
 			Cost initialInsertCost, Cost initialDeleteCost) 
     {
     	Route insertRoute = sol.getRoute(move.getInsertDepotNr(), move.getInsertRouteNr());

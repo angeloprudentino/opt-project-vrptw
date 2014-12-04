@@ -26,7 +26,7 @@ public class MySearchProgram implements TabuSearchListener{
 
 	private static int iterationsDone;
 	private TabuSearch tabuSearch;
-	private MySolution sol;
+	private MyTSsolution sol;
 	public Instance instance;
 	public Route[][] feasibleRoutes; // stores the routes of the feasible solution if any
 	public Cost feasibleCost;		 // stores the total cost of feasible solution if any, otherwise totalcostviol = Double.Infinity
@@ -60,7 +60,7 @@ public class MySearchProgram implements TabuSearchListener{
 	 */
 	@Override
 	public void newBestSolutionFound(TabuSearchEvent event) {
-		sol = ((MySolution)tabuSearch.getBestSolution());
+		sol = ((MyTSsolution)tabuSearch.getBestSolution());
 		bestCost 	= getCostFromObjective(sol.getObjectiveValue());
 		bestRoutes 	= cloneRoutes(sol.getRoutes());
 		bestIndex 	= tabuSearch.getIterationsCompleted() + 1; // plus the current one
@@ -76,7 +76,7 @@ public class MySearchProgram implements TabuSearchListener{
 	 */
 	@Override
 	public void newCurrentSolutionFound(TabuSearchEvent event) {
-		sol = ((MySolution)tabuSearch.getCurrentSolution());
+		sol = ((MyTSsolution)tabuSearch.getCurrentSolution());
 		currentCost = getCostFromObjective(sol.getObjectiveValue());
 		MySearchProgram.iterationsDone += 1;
 		
@@ -106,7 +106,7 @@ public class MySearchProgram implements TabuSearchListener{
 	 */
 	@Override
 	public void tabuSearchStarted(TabuSearchEvent event) {
-		sol = ((MySolution)tabuSearch.getCurrentSolution());
+		sol = ((MyTSsolution)tabuSearch.getCurrentSolution());
 		// initialize the feasible and best cost with the initial solution objective value
 		bestCost = getCostFromObjective(sol.getObjectiveValue());
 		feasibleCost = bestCost;
@@ -119,7 +119,7 @@ public class MySearchProgram implements TabuSearchListener{
 
 	@Override
 	public void tabuSearchStopped(TabuSearchEvent event) {
-		sol    = ((MySolution)tabuSearch.getBestSolution());
+		sol    = ((MyTSsolution)tabuSearch.getBestSolution());
 		if (feasibleCost.total != Double.POSITIVE_INFINITY) {
 			sol.setCost(feasibleCost);
 			sol.setRoutes(feasibleRoutes);

@@ -566,6 +566,7 @@ public abstract class GA implements Runnable
 
         if (this instanceof GARoute)
         {
+        	//TODO find a way to assign the instance to these chromosomes
             Chrom1 = new ChromCustomer(chromosomeDim);
             Chrom2 = new ChromCustomer(chromosomeDim);
         }
