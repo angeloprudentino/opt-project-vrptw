@@ -2,6 +2,7 @@ package com.softtechdesign.ga;
 import java.util.Date;
 
 import com.mdvrp.Customer;
+import com.mdvrp.Instance;
 import com.mdvrp.MyLogger;
 
 /**
@@ -39,6 +40,10 @@ public abstract class GA implements Runnable
 {
 	private static String class_name = GA.class.getName();
 	private static MyLogger MyLog = new MyLogger(class_name);
+	
+	/** instance of the problem;
+	 * used only for GARoute*/
+	private Instance instance;
 	
     /** probability of a mutation occuring during genetic mating. For example, 0.03 means 3% chance */
     double mutationProb; 
@@ -314,6 +319,13 @@ public abstract class GA implements Runnable
     }
 
     /**
+	 * @param instance: the instance of the problem
+	 */
+	protected void setInstance(Instance instance) {
+		this.instance = instance;
+	}
+
+	/**
      * Main routine that runs the evolution simulation for this population of chromosomes.  
      * @return number of generations
      */
@@ -566,9 +578,8 @@ public abstract class GA implements Runnable
 
         if (this instanceof GARoute)
         {
-        	//TODO find a way to assign the instance to these chromosomes
-            Chrom1 = new ChromCustomer(chromosomeDim);
-            Chrom2 = new ChromCustomer(chromosomeDim);
+            Chrom1 = new ChromCustomer(chromosomeDim, instance);
+            Chrom2 = new ChromCustomer(chromosomeDim, instance);
         }
         else if (this instanceof GAString)
         {
