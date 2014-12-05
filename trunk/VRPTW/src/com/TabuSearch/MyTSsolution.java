@@ -36,16 +36,18 @@ public class MyTSsolution extends SolutionAdapter{
 	
 	public MyTSsolution() {} // Appease clone()
 
-	public MyTSsolution(Instance instance) {
+	public MyTSsolution(Instance instance, boolean build_routes) {
 		MyTSsolution.setInstance(instance);
 		cost = new Cost();
 		initializeRoutes(instance);
 		MyLog.warning(class_name, "constructor", "initializeRoutes(instance)");
 		MyLog.info(class_name, "constructor", toString());
 		
-		buildInitialRoutes1(instance);
-		MyLog.warning(class_name, "constructor", "buildInitialRoutes1(instance)");
-		MyLog.info(class_name, "constructor", toString());
+		if (build_routes) {
+			buildInitialRoutes1(instance);
+			MyLog.warning(class_name, "constructor", "buildInitialRoutes1(instance)");
+			MyLog.info(class_name, "constructor", toString());
+		}
 		
 		// used for input routes from file
 		alpha 	= 1;
@@ -58,7 +60,6 @@ public class MyTSsolution extends SolutionAdapter{
     	MyTSsolution.setIterationsDone(0);
     	Bs = new int[instance.getCustomersNr()][instance.getVehiclesNr()][instance.getDepotsNr()];		
 	}
-	
 	
 	public Object clone()
     {   
