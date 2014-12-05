@@ -18,6 +18,7 @@ import com.mdvrp.Instance;
  */
 public class GARoute extends GA {
 
+	//TODO write a function to generate this values randomly
     private static final double alpha = 0.54;
     private static final double beta = 0.30;
     private static final double gamma = 0.19;
@@ -37,6 +38,7 @@ public class GARoute extends GA {
      * @param mutationProb
      * @param crossoverType
      * @param computeStatistics
+     * @param instance
      */
     public GARoute(int chromosomeDim, 
 		           int populationDim, 
@@ -260,7 +262,8 @@ public class GARoute extends GA {
         protected double getFitness(int iChromIndex) {
     	
     	ChromCustomer chrom = (ChromCustomer) chromosomes[iChromIndex];
-    	double total = chrom.getCost().getTravelTime() + alpha * chrom.getCost().getLoadViol() + beta * chrom.getCost().getDurationViol() + gamma * chrom.getCost().getTwViol();
+    	chrom.getCost().calculateTotal(alpha, beta, gamma);
+    	double total = chrom.getCost().getTotal();
     	
     	return 1/total;
         }
@@ -269,14 +272,8 @@ public class GARoute extends GA {
 		 * @return the best_sol
 		 */
 		public MyGAsolution getBestSol() {
+			best_feasible_sol.UpdateSolution((ChromCustomer) chromosomes[bestFitnessChromIndex]);
 			return best_feasible_sol;
-		}
-
-		/**
-		 * @param best_sol -> the best fesible sol from GA
-		 */
-		public void setBestSol(MyGAsolution best_sol) {
-			this.best_feasible_sol = best_sol;
 		}
 
 }

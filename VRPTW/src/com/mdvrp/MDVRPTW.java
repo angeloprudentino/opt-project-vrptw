@@ -64,11 +64,39 @@ public class MDVRPTW {
         	    MyLog.info(class_name, "main",
         		    "instance.populateFromHombergFile(parameters.getInputFileName()) => instnce populated from file "
         			    + parameters.getInputFileName());
-        
+  
+        	    // Init memory for Genetic Algorithm
+        	    MyLog.info(class_name, "main", "creating required GA data structure");
+        	    //TODO enable the GA constructor
+        	    //GAsearch = new GARoute(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations, numPrelimRuns, maxPrelimGenerations, mutationProb, crossoverType, computeStatistics, instance);
+        	    MyLog.info(class_name, "main", "new GARoute(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations, numPrelimRuns, maxPrelimGenerations, mutationProb, crossoverType, computeStatistics, instance) => GA search program created");
+        	   
+/*        	    initial_GA_sol = new MyGAsolution(instance);
+        	    //initial_TS_Sol.ConvertTSGA(); //TODO fix this call
+        	    Thread GAThread = new Thread(GAsearch);
+        	    GAThread.start();
+        	    MyLog.info(class_name, "main", "GAThread.start(); => START");
+        	    //wait for the search thread to finish
+        	    try {
+       		     // in order to apply wait on an object synchronization must be done
+        		     synchronized (instance) {
+       		     instance.wait();
+        		}
+        	    } catch (InterruptedException e1) {
+        		    e1.printStackTrace();
+        		    MyLog.err(class_name, "main", e1.getMessage());
+        	    }
+        	    
+        	    MyLog.info(class_name, "main", "GAThread; => STOP");
+        	    best_GA_sol = GAsearch.getBestSol();
+*/ 
+
         	    // Init memory for Tabu Search
         	    //TODO this will be removed because initial TS solution comes from GA
         	    MyLog.info(class_name, "main", "creating required TS data structure");
-        	    initial_TS_sol = new MyTSsolution(instance);
+        	    // true-> use only TS;
+        	    // false-> use GA + TS;
+        	    initial_TS_sol = new MyTSsolution(instance, true);
         	    MyLog.info(class_name, "main", "new MySolution(instance) => initial solution instance created");
         
         	    objFunc = new MyObjectiveFunction(instance);
@@ -94,35 +122,6 @@ public class MDVRPTW {
         	    TSsearch = new MySearchProgram(instance, initial_TS_sol, moveManager, objFunc, tabuList, false, outPrintSream);
         	    MyLog.info(class_name, "main", "new MySearchProgram(instance, initialSol, moveManager, objFunc, tabuList, false, outPrintSream) => TS search program created");
         
-        	    // Init memory for Genetic Algorithm
-        	    MyLog.info(class_name, "main", "creating required GA data structure");
-        	    //TODO enable the GA constructor
-        	    //GAsearch = new GARoute(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations, numPrelimRuns, maxPrelimGenerations, mutationProb, crossoverType, computeStatistics, instance);
-        	    MyLog.info(class_name, "main", "new GARoute(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations, numPrelimRuns, maxPrelimGenerations, mutationProb, crossoverType, computeStatistics, instance) => GA search program created");
-        	   
-        	    initial_GA_sol = new MyGAsolution(instance);
-        	    best_GA_sol = new MyGAsolution(instance);
-        	    //initial_TS_Sol.ConvertTSGA(); //TODO fix this call
-        	    Thread GAThread = new Thread(GAsearch);
-        	    GAThread.start();
-        	    GAThread.
-        	    MyLog.info(class_name, "main", "GAThread.start(); => START");
-        	    //wait for the search thread to finish
-        	    try {
-       		     // in order to apply wait on an object synchronization must be done
-        		     synchronized (instance) {
-       		     instance.wait();
-        		}
-        	    } catch (InterruptedException e1) {
-        		    e1.printStackTrace();
-        		    MyLog.err(class_name, "main", e1.getMessage());
-        	    }
-        	    
-        	    MyLog.info(class_name, "main", "GAThread; => STOP");
-        	    best_GA_sol = GAsearch.getBestSol();
-        	    MyLog.info(class_name, "main", "best solution from the GA algorithm:");
-        	    MyLog.info(class_name, "main", best_GA_sol.toString());
-*/ 
         	    // Start solving
         	    TSsearch.getTabuSearch().setIterationsToGo(parameters.getIterations());
         	    MyLog.info(class_name, "main", "search.tabuSearch.setIterationsToGo(parameters.getIterations()) => number of iterations = " + parameters.getIterations());

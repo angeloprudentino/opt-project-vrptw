@@ -332,58 +332,60 @@ public abstract class GA implements Runnable
     public int evolve()
     {
         int iGen;
-        int iPrelimChrom, iPrelimChromToUsePerRun;
+//        int iPrelimChrom, iPrelimChromToUsePerRun;
 
         MyLog.info(class_name, "evolve()", "GA start time: " + new Date().toString());
 
-        if (numPrelimRuns > 0)
-        {
-            iPrelimChrom = 0;
-            //number of fittest prelim chromosomes to use with final run
-            iPrelimChromToUsePerRun = populationDim / numPrelimRuns;
-
-            for (int iPrelimRuns = 1; iPrelimRuns <= numPrelimRuns; iPrelimRuns++)
-            {
-                iGen = 0;
-                initPopulation();
-
-                //create a somewhat fit chromosome population for this prelim run
-                while (iGen < maxPrelimGenerations)
-                {
-                	MyLog.info(class_name, "evolve()", iPrelimRuns + " of " + numPrelimRuns + " prelim runs --> " +
-                                       (iGen + 1) + " of " + maxPrelimGenerations + " generations");
-
-                    computeFitnessRankings();
-                    doGeneticMating();
-                    copyNextGenToThisGen();
-
-                    if (computeStatistics == true)
-                    {
-                        this.genAvgDeviation[iGen] = getAvgDeviationAmongChroms();
-                        this.genAvgFitness[iGen] = getAvgFitness();
-                    }
-                    iGen++;
-                }
-
-                computeFitnessRankings();
-
-                //copy these somewhat fit chromosomes to the main chromosome pool
-                int iNumPrelimSaved = 0;
-                for (int i = 0; i < populationDim && iNumPrelimSaved < iPrelimChromToUsePerRun; i++)
-                    if (this.chromosomes[i].fitnessRank >= populationDim - iPrelimChromToUsePerRun)
-                    {
-                        this.prelimChrom[iPrelimChrom + iNumPrelimSaved].copyChromGenes(this.chromosomes[i]);
-                        //store (remember) these fit chroms
-                        iNumPrelimSaved++;
-                    }
-                iPrelimChrom += iNumPrelimSaved;
-            }
-            for (int i = 0; i < iPrelimChrom; i++)
-                this.chromosomes[i].copyChromGenes(this.prelimChrom[i]);
-            MyLog.info(class_name, "evolve()", "INITIAL POPULATION AFTER PRELIM RUNS:");
-        }
-        else
-        	MyLog.info(class_name, "evolve()", "INITIAL POPULATION (NO PRELIM RUNS):");
+        // Angelo -> 05/12/2014 (i think we don't need preliminary runs
+        
+//        if (numPrelimRuns > 0)
+//        {
+//            iPrelimChrom = 0;
+//            //number of fittest prelim chromosomes to use with final run
+//            iPrelimChromToUsePerRun = populationDim / numPrelimRuns;
+//
+//            for (int iPrelimRuns = 1; iPrelimRuns <= numPrelimRuns; iPrelimRuns++)
+//            {
+//                iGen = 0;
+//                initPopulation();
+//
+//                //create a somewhat fit chromosome population for this prelim run
+//                while (iGen < maxPrelimGenerations)
+//                {
+//                	MyLog.info(class_name, "evolve()", iPrelimRuns + " of " + numPrelimRuns + " prelim runs --> " +
+//                                       (iGen + 1) + " of " + maxPrelimGenerations + " generations");
+//
+//                    computeFitnessRankings();
+//                    doGeneticMating();
+//                    copyNextGenToThisGen();
+//
+//                    if (computeStatistics == true)
+//                    {
+//                        this.genAvgDeviation[iGen] = getAvgDeviationAmongChroms();
+//                        this.genAvgFitness[iGen] = getAvgFitness();
+//                    }
+//                    iGen++;
+//                }
+//
+//                computeFitnessRankings();
+//
+//                //copy these somewhat fit chromosomes to the main chromosome pool
+//                int iNumPrelimSaved = 0;
+//                for (int i = 0; i < populationDim && iNumPrelimSaved < iPrelimChromToUsePerRun; i++)
+//                    if (this.chromosomes[i].fitnessRank >= populationDim - iPrelimChromToUsePerRun)
+//                    {
+//                        this.prelimChrom[iPrelimChrom + iNumPrelimSaved].copyChromGenes(this.chromosomes[i]);
+//                        //store (remember) these fit chroms
+//                        iNumPrelimSaved++;
+//                    }
+//                iPrelimChrom += iNumPrelimSaved;
+//            }
+//            for (int i = 0; i < iPrelimChrom; i++)
+//                this.chromosomes[i].copyChromGenes(this.prelimChrom[i]);
+//            MyLog.info(class_name, "evolve()", "INITIAL POPULATION AFTER PRELIM RUNS:");
+//        }
+//        else
+//        	MyLog.info(class_name, "evolve()", "INITIAL POPULATION (NO PRELIM RUNS):");
 
         //Add Preliminary Chromosomes to list box
         MyLog.info(class_name, "evolve()", "initPopulation() => called;");
@@ -393,7 +395,6 @@ public abstract class GA implements Runnable
         iGen = 0;
         while (iGen < maxGenerations)
         {
-        	// TODO modificare affinchè faccia un numero arbitrario di crossover
             computeFitnessRankings();
             doGeneticMating();
             copyNextGenToThisGen();
@@ -404,6 +405,8 @@ public abstract class GA implements Runnable
                 this.genAvgFitness[iGen] = getAvgFitness();
             }
 
+            MyLog.info(class_name, "evolve()", "best chromosome at iteration " + iGen + ":");
+            MyLog.info(class_name, "evolve()", this.chromosomes[this.bestFitnessChromIndex].getGenesAsStr());
             iGen++;
         }
 
@@ -574,6 +577,11 @@ public abstract class GA implements Runnable
         this.chromNextGen[iCnt].copyChromGenes(this.chromosomes[this.bestFitnessChromIndex]);
         iCnt++;
         this.chromNextGen[iCnt].copyChromGenes(this.chromosomes[this.bestFitnessChromIndex]);
+        iCnt++;
+        //Angelo--> also the worst chromosome go to next generation, in order to have more variations
+        this.chromNextGen[iCnt].copyChromGenes(this.chromosomes[this.worstFitnessChromIndex]);
+        iCnt++;
+        this.chromNextGen[iCnt].copyChromGenes(this.chromosomes[this.worstFitnessChromIndex]);
         iCnt++;
 
         if (this instanceof GARoute)
