@@ -61,45 +61,44 @@ public class GARoute extends GA {
 		
     }
 
-    /** 
-     * @see com.softtechdesign.ga.GA#initPopulation()
+    /**
+	 * @author Daniele Faveria
+	 * @date 22/nov/2014
      */
     @Override
     protected void initPopulation() {
-    	// TODO if i can't find any feasible solution??
     	int v;
     	int c = 0;
     	int NUM_VEHIC = instance.getVehiclesNr();
     	int NUM_CUST = instance.getCustomersNr();
     	Random random = instance.getRandom();
     	
-    	
-    	boolean[] assignedCust = new boolean[NUM_VEHIC]; 
-    	//ProtoChromosome temp = new ProtoChromosome(NUM_VEHIC, NUM_CUST);
+    	boolean[] assignedCust = new boolean[NUM_CUST]; 
     	ProtoChromosome temp = new ProtoChromosome(instance);
     	//number of not assigned customers:
     	int notAssigned;
     	
-    	//for each chromosome to be generated (one comes from TS greedy method):
-        for (int chrom = 0; chrom < populationDim-1; chrom++){
+    	//for each chromosome to be generated (one comes from TS greedy method, 
+    	//and it's placed in the 0th position):
+        for (int chrom = 1; chrom < populationDim; chrom++){
         	notAssigned = NUM_CUST;
-        	for(int i=0; i<NUM_VEHIC; i++)
+        	for(int i=0; i<NUM_CUST; i++)
         		assignedCust[i] = false;
         	
         	//until all customers are assigned:
         	while(notAssigned > 0){
         		//find a cust which is still not served
-        		if (notAssigned/NUM_CUST < LOAD_RATIO) {
+        		if ((double)(notAssigned)/NUM_CUST > LOAD_RATIO) {
         			//choose randomly
 	        		do {
 		            	c = random.nextInt(NUM_CUST);
-	        		} while (assignedCust[c] == false);
+	        		} while (assignedCust[c] == true);
         		}
         		else {
         			//scan the vector
         			do {
         				c = (++c) % NUM_CUST;
-        			} while (assignedCust[c] == false);
+        			} while (assignedCust[c] == true);
         		}
             		
         		//chose a random vehicle to start
@@ -125,6 +124,7 @@ public class GARoute extends GA {
         		//if customer is not assignable, then the protosolution must be rebuilt from scratch.
         		if (assignedCust[c] == false){
         			//repeat last iteration of chrom for.
+        			//System.out.println("Unfeasible, redoing");
         			chrom--;
         			break;
         		}
@@ -135,8 +135,10 @@ public class GARoute extends GA {
         	if (notAssigned == 0){
         		this.chromosomes[chrom] = temp.toChromosome();
             	this.chromosomes[chrom].fitness = getFitness(chrom);
+        		//System.out.println("Finished chromosome " + chrom);
         	}
     }
+    //System.out.println("Finished with the initial generation");
 }
 
     /** 
