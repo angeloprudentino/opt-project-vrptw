@@ -4,71 +4,112 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.TabuSearch.MyTSsolution;
-
-
+import com.softtechdesign.ga.ChromCustomer;
+import com.softtechdesign.ga.MyGAsolution;
 
 public class MyConverter {
 
 	/**
-	 * Tabu Search format (routes matrix) to Genetic Algorithm format (linear vector)
-	 */	
+	 * Tabu Search format (routes matrix) to Genetic Algorithm format (linear
+	 * vector)
+	 */
 	@SuppressWarnings("static-access")
-	public static Customer[] ConvertTSGA(MyTSsolution sol){
-		int i=0, j=0, k=0, tot=0;
+	public static MyGAsolution ConvertTSGA(MyTSsolution sol) {
+		// Cycles variables
+		int i = 0, j = 0, k = 0, tot = 0;
+		// Instance data
+		Instance inst = sol.getInstance();
+		// Routes matrix from the TS
 		Route[][] routes = sol.getRoutes();
+		// Customers list for a specific route
 		List<Customer> currV;
-		Customer[] GACustArray; 
-				
-		
+		// Customers array
+		Customer[] GACustArray;
+		// Solution in the GA format
+		MyGAsolution GAsol = new MyGAsolution(inst);
+		// Solution in the chromosome format
+		ChromCustomer ChrSol = GAsol.getSolution();
+
+		// Create Depot type customer (id<>0, id=number of customers)
 		Customer DepotCust = new Customer();
-		DepotCust.setNumber(0);
-		
-		for (i=0; i<sol.getInstance().getVehiclesNr(); i++){
-			for (j=0; j<routes[0][i].getCustomersLength() ; j++) {
-					tot++;
-			}
-			tot++;
-		}
+		DepotCust.setNumber(inst.getCustomersNr());
+
+		// Customer array lenght calculation
+		tot = inst.getCustomersNr() + inst.getVehiclesNr();
+
+		// Creation of the customer array
 		GACustArray = new Customer[tot];
-		GACustArray[k]=DepotCust;
+		// First customer is a depot
+		GACustArray[k] = DepotCust;
 		k++;
-		for (i=0; i<sol.getInstance().getVehiclesNr(); i++){
+
+		// Populate the customer array
+		for (i = 0; i < inst.getVehiclesNr(); i++) {
+			// for every vehicle, get the customer list
 			currV = routes[0][i].getCustomers();
-			for (j=0; j<routes[0][i].getCustomersLength() ; j++) {
-					GACustArray[k] = currV.get(j);
-					k++;
+			// cycle through the customer list
+			for (j = 0; j < routes[0][i].getCustomersLength(); j++) {
+				// write every customer in the customer array
+				GACustArray[k] = currV.get(j);
+				k++;
 			}
-			if (k==tot)
+			if (k == tot)
+				// if this is the last position of the customer array, terminate
+				// the cycle
 				break;
-			GACustArray[k]=DepotCust;
+			// after every customer list, there is the depot
+			GACustArray[k] = DepotCust;
 			k++;
 		}
-		
-		sol.setGACustArray(GACustArray);
-		
-		return GACustArray;
+
+		// Write the customer array in the chromosome
+		ChrSol.setGenes(GACustArray);
+		// Write the chromosome in the GAsolution
+		GAsol.UpdateSolution(ChrSol);
+
+		// Return the GASolution
+		return GAsol;
 	}
-	
+
 	/**
-	 * Genetic Algorithm format (linear vector) to Tabu Search format (routes matrix)
-	 */	
-	public static Route[][] ConvertGATS (MyTSsolution sol){
+	 * Genetic Algorithm format (linear vector) to Tabu Search format (routes
+	 * matrix)
+	 */
+	public static MyTSsolution ConvertGATS(MyGAsolution sol) {
+		// Instance infomation
+		Instance inst = sol.getInstance();
+		// Temporary customers array
 		ArrayList<Customer> tempCust = new ArrayList<Customer>();
-		//Route[][] froutes = new Route[instance.getDepotsNr()][instance.getVehiclesNr()];
-		int k=0;
-		Route[][] routes  = sol.getRoutes();
-		Customer[] GACustArray = sol.getGACustArray();
-		
-		for (int i=1; i<sol.getGACustArray().length; i++){
-			 if (GACustArray[i].getNumber()==0){
-				 k++;
-				 routes[0][k].setCustomers(tempCust);
-				 tempCust.clear();
-				 continue;
-			 }
-			 tempCust.add(GACustArray[i]);
+		// TS solution with instance informations and without the generation of
+		// the routes
+		MyTSsolution TSsol = new MyTSsolution(inst, false);
+		// Cycle variable
+		int k = 0;
+
+		// Routes matrix for the TS
+		Route[][] routes = TSsol.getRoutes();
+		// Customer array from the GA (edited method)
+		Customer[] GACustArray = sol.getSolution().getGenes();
+
+		// Write in the routes matrix
+		for (int i = 1; i < GACustArray.length; i++) {
+			// If the current customer is a depot,
+			if (GACustArray[i].getNumber() == inst.getCustomersNr()) {
+				// write the customer list in the routes matrix (edited method)
+				routes[0][k].setCustomers(tempCust);
+				// clear the temporary customers ArrayList
+				tempCust.clear();
+				// go to the following route
+				k++;
+				continue;
+			}
+			// Otherwise add the current costumer in the temporary customer
+			// ArrayList
+			tempCust.add(GACustArray[i]);
 		}
-		sol.setRoutes(routes);
-		return routes;	
+		// Write the routes in the TSsolution
+		TSsol.setRoutes(routes);
+		// Return the TSsolution
+		return TSsol;
 	}
 }
