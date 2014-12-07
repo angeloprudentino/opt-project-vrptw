@@ -15,26 +15,28 @@ import com.mdvrp.Instance;
  *
  */
 public class MyGAsolution {
- 
-	//this class should give all the enrty points for a GA solution:
-	//	   1- the inizialization;
-	//	   2- methods to update the current best solution;
-	//     3- getters;
-	//     4- toString();
+
+	// this class should give all the entry points for a GA solution:
+	// 1- the inizialization;
+	// 2- methods to update the current best solution;
+	// 3- getters;
+	// 4- toString();
 	//
-	//if any other method could be usefull, add it.
-	
-	Instance instance;
-	ChromCustomer solution;    //the actual solution is a chromosome
+	// if any other method could be useful, add it.
+
+	private Instance instance;
+	ChromCustomer solution; // the actual solution is a chromosome
 
 	/**
-	 * @param instance of the problem
+	 * @param instance
+	 *            of the problem
 	 */
 	public MyGAsolution(Instance instance) {
 		super();
 		this.instance = instance;
 		// I manage only the case with 1 depot
-		int chromosomeDim = instance.getCustomersNr() + instance.getVehiclesNr();
+		int chromosomeDim = instance.getCustomersNr()
+				+ instance.getVehiclesNr();
 		solution = new ChromCustomer(chromosomeDim, instance);
 	}
 
@@ -46,19 +48,26 @@ public class MyGAsolution {
 	}
 
 	/**
-	 * @param solution: the solution to set
+	 * @param solution
+	 *            : the solution to set
 	 */
 	public void UpdateSolution(ChromCustomer solution) {
 		this.solution = solution;
 	}
 
-	/** 
+	/**
 	 * @return GA solution in string format
 	 */
 	@Override
 	public String toString() {
 		return solution.getGenesAsStr();
 	}
-	
-	
+
+	/**
+	 * @return the instance
+	 */
+	public Instance getInstance() {
+		return instance;
+	}
+
 }

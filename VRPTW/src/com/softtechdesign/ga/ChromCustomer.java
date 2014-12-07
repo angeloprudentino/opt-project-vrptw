@@ -35,7 +35,7 @@ public class ChromCustomer extends Chromosome {
      */
     protected ChromCustomer(int iGenesDim, Instance instance)
     {
-        this.genes = new Customer[iGenesDim];
+        this.setGenes(new Customer[iGenesDim]);
         this.instance = instance;
         this.cost = new Cost();
         buildDepots();
@@ -74,7 +74,7 @@ public class ChromCustomer extends Chromosome {
     
     protected void setGene(Customer gene, int geneIndex)
     {
-        genes[geneIndex] = gene;
+        getGenes()[geneIndex] = gene;
     }
 
     /**
@@ -87,21 +87,21 @@ public class ChromCustomer extends Chromosome {
         int numGenesInCommon = 0;
         ChromCustomer chromR = (ChromCustomer)chromosome;
 
-        for (int i = 0; i < genes.length; i++)
+        for (int i = 0; i < getGenes().length; i++)
         {
-            if (this.genes[i].equals(chromR.genes[i]))
+            if (this.getGenes()[i].equals(chromR.getGenes()[i]))
                 numGenesInCommon++;
         }
         return (numGenesInCommon);
     }
 
     /**
-     * Get a reference to the genes array
+     * Get a reference to the genes array, edited to be public instead of protected
      * @return String[]
      */
-    protected Customer[] getGenes()
+    public Customer[] getGenes()
     {
-        return(genes);
+        return genes;
     }
     
     /**
@@ -112,14 +112,14 @@ public class ChromCustomer extends Chromosome {
      */
     protected String getGenesAsStr()
     {
-        int genesLength = genes.length;
+        int genesLength = getGenes().length;
         
         StringBuffer sb = new StringBuffer("");
         for (int i = 0; i < genesLength; i++)
         {
-        	if(genes[i].getNumber() == 0)
+        	if(getGenes()[i].getNumber() == 0)
         		sb.append("\n  [" + i + "] = ");
-            sb.append(genes[i].toString());
+            sb.append(getGenes()[i].toString());
         }
         sb.append("\n");
         sb.append(cost.toString());
@@ -134,7 +134,7 @@ public class ChromCustomer extends Chromosome {
      */
     protected Customer getGene(int iGene)
     {
-        return (this.genes[iGene]);
+        return (this.getGenes()[iGene]);
     }
     
     /**
@@ -146,8 +146,8 @@ public class ChromCustomer extends Chromosome {
         int iGene;
         ChromCustomer chromC = (ChromCustomer)chromosome;
 
-        for (iGene = 0; iGene < genes.length; iGene++)
-            this.genes[iGene] = chromC.genes[iGene];
+        for (iGene = 0; iGene < getGenes().length; iGene++)
+            this.getGenes()[iGene] = chromC.getGenes()[iGene];
         
         updateChromCost(chromC);
     }
@@ -238,15 +238,22 @@ public class ChromCustomer extends Chromosome {
 	}
 
 	protected int length() {
-		return genes.length;
+		return getGenes().length;
 	}
 
 	protected int getPosition(Customer gene) {
-		for (int i = 0; i < genes.length; i++) {
-			if (genes[i].equals(gene) == true)
+		for (int i = 0; i < getGenes().length; i++) {
+			if (getGenes()[i].equals(gene) == true)
 				return i;
 		}
 		return -1; // error code because this method have to find the value into the array
+	}
+
+	/**
+	 * @param genes the genes to set
+	 */
+	public void setGenes(Customer[] genes) {
+		this.genes = genes;
 	}
 
 }
