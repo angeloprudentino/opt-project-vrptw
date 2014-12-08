@@ -183,10 +183,17 @@ public class GARoute extends GA {
 		boolean[] usedValuesChild1 = new boolean[dimAlphabet];
 		boolean[] usedValuesChild2 = new boolean[dimAlphabet];
 		int arrayDimension = parent1.length();
-		int cutPoint1 = (int)Math.random()%arrayDimension;
-		int cutPoint2;
-		while((cutPoint2 = (int)Math.random()%arrayDimension) == cutPoint1); // to avoid cutPoint1 == cutPoint2
-
+		int cutPoint1 = (int)(Math.random()*100000)%arrayDimension;
+		int cutPoint2 = (int)(Math.random()*100000)%arrayDimension;
+		while((cutPoint2 = (int)(Math.random()*100000)%arrayDimension) == cutPoint1); // to avoid cutPoint1 == cutPoint2
+		
+		//cut Point1 must be the first one
+		if(cutPoint1 > cutPoint2){
+			int tmp=cutPoint1;
+			cutPoint1=cutPoint2;
+			cutPoint2=tmp;
+		}
+		
     	    try{
     	    	
     			//initialization of boolean arrays
