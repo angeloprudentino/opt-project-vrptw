@@ -112,6 +112,9 @@ public class Instance {
 			
 			depot.setNumber(customersNr);
 			
+			// Angelo 08/12/2014 //TODO
+			parameters.setChromosomeDim(customersNr + vehiclesNr);
+			
 			if(parameters.getTabuTenure() == -1)
 				parameters.setTabuTenure((int)(Math.sqrt(getCustomersNr())));
 			

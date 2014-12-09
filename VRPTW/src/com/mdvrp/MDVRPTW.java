@@ -20,14 +20,10 @@ public class MDVRPTW {
 
 	public static void main(String[] args) {
 
-		Parameters parameters = new Parameters(); // holds all the parameters
-													// passed from the input
-													// line
-		Instance instance; // holds all the problem data extracted from the
-							// input file
-		Duration duration = new Duration(); // used to calculate the elapsed
-											// time
-		PrintStream outPrintSream = null; // used to redirect the output
+		Parameters parameters = new Parameters(); 	// holds all the parameters passed from the input line
+		Instance instance; 							// holds all the problem data extracted from the input file
+		Duration duration = new Duration(); 		// used to calculate the elapsed time
+		PrintStream outPrintSream = null; 			// used to redirect the output
 
 		// Tabu search variables
 		MySearchProgram TSsearch;
@@ -47,9 +43,7 @@ public class MDVRPTW {
 			startLog();
 			// check to see if an input file was specified
 			parameters.updateParameters(args);
-			MyLog.info(class_name, "main",
-					"parameters.updateParameters(args) => parameters set");
-			MyLog.info(class_name, "main", parameters.toString());
+			MyLog.info(class_name, "main", "parameters.updateParameters(args) => parameters set");
 
 			if (parameters.getInputFileName() == null) {
 				MyLog.err(class_name, "main",
@@ -62,28 +56,17 @@ public class MDVRPTW {
 
 			// get the instance from the file
 			instance = new Instance(parameters);
-			MyLog.info(class_name, "main",
-					"new Instance(parameters) => instance created successfully");
+			MyLog.info(class_name, "main", "new Instance(parameters) => instance created successfully");
 
 			instance.populateFromHombergFile(parameters.getInputFileName());
-			MyLog.info(
-					class_name,
-					"main",
-					"instance.populateFromHombergFile(parameters.getInputFileName()) => instnce populated from file "
-							+ parameters.getInputFileName());
+			MyLog.info(class_name, "main", "instance.populateFromHombergFile(parameters.getInputFileName()) => instnce populated from file " + parameters.getInputFileName());
+			MyLog.info(class_name, "main", parameters.toString());
 
 			// Init memory for Genetic Algorithm
-			MyLog.info(class_name, "main",
-					"creating required GA data structure");
+			MyLog.info(class_name, "main", "creating required GA data structure");
 			// TODO enable the GA constructor
-			// GAsearch = new GARoute(chromosomeDim, populationDim,
-			// crossoverProb, randomSelectionChance, maxGenerations,
-			// numPrelimRuns, maxPrelimGenerations, mutationProb, crossoverType,
-			// computeStatistics, instance);
-			MyLog.info(
-					class_name,
-					"main",
-					"new GARoute(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations, numPrelimRuns, maxPrelimGenerations, mutationProb, crossoverType, computeStatistics, instance) => GA search program created");
+			// GAsearch = new GARoute(parameters, instance);
+			MyLog.info(class_name, "main", "new GARoute(parameters, instance) => GA search program created");
 
 			/*
     	     *	JUST FOR DEBUGGIN PURPOSES, CAN BE REMOVED WHENEVER YOU WANT 
