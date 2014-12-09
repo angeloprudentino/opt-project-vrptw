@@ -11,6 +11,7 @@ import com.TabuSearch.MyTSsolution;
 import com.mdvrp.Customer;
 import com.mdvrp.Instance;
 import com.mdvrp.MyConverter;
+import com.mdvrp.Parameters;
 
 
 
@@ -36,40 +37,27 @@ public class GARoute extends GA {
     private MyGAsolution best_feasible_sol; //TODO we need to store the best feasible solution of the GA at each iteration
 
     /**
-     * @param chromosomeDim
-     * @param populationDim
-     * @param crossoverProb
-     * @param randomSelectionChance
-     * @param maxGenerations
-     * @param numPrelimRuns
-     * @param maxPrelimGenerations
-     * @param mutationProb
-     * @param crossoverType
-     * @param computeStatistics
+     * @param parameters
      * @param instance
-     * @param greedyRatio
-     * 	ratio of greedy initial population (1 = all greedy, 0 = all random)
      */
-    public GARoute(int chromosomeDim, 
-		           int populationDim, 
-		           double crossoverProb, 
-		           int randomSelectionChance,
-		           int maxGenerations, 
-		           int numPrelimRuns, 
-		           int maxPrelimGenerations, 
-		           double mutationProb, 
-		           int crossoverType,
-		           boolean computeStatistics,
-		           Instance instance,
-		           double greedyRatio) {
+    public GARoute(Parameters p, Instance instance) {
 	
-		super(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations, numPrelimRuns,
-			maxPrelimGenerations, mutationProb, crossoverType, computeStatistics);
+		super(p.getChromosomeDim(),
+			  p.getPopulationDim(), 
+			  p.getCrossoverProb(), 
+			  p.getRandomSelectionChance(), 
+			  p.getMaxGenerations(), 
+			  p.getNumPrelimRuns(),
+			  p.getMaxPrelimGenerations(), 
+			  p.getMutationProb(), 
+			  p.getCrossoverType(), 
+			  p.isComputeStatistics());
+		
 		super.setInstance(instance);
 		
 		this.instance = instance;
 		this.best_feasible_sol = new MyGAsolution(instance);
-		this.greedyRatio = greedyRatio;
+		this.greedyRatio = p.getGreedyRatio();
     }
 
     /**
@@ -186,7 +174,7 @@ public class GARoute extends GA {
     	ChromCustomer child1 = null; //new ChromCustomer();				//TODO ALLOCATE OBJECT CHILD1 and CHILD2
     	ChromCustomer child2 = null; //new ChromCustomer();
 //    	int dimAlphabet = 200;											//TODO SET THE CORRECT NUMBER OF CUSTUMERS
-    	pmX(parent1, parent2, child1, child2, populationDim);			//è giusto il valore contenuto in populationDim??
+    	pmX(parent1, parent2, child1, child2, populationDim);			//ï¿½ giusto il valore contenuto in populationDim??
     	Chrom1=child1;
     	Chrom2=child2;
     	

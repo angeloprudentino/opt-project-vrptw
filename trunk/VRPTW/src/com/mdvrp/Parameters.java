@@ -5,9 +5,13 @@ import com.softtechdesign.ga.Crossover;
 
 public class Parameters {
 	
+	private static final String GATS = "gats";
+	private static final String TS = "ts";
+	
 	// general parameters
 	private String inputFileName;
 	private String outputFileName;
+	private String mode;  
 	
 	// TS specific parameters
 	private MovesType movesType;
@@ -20,16 +24,17 @@ public class Parameters {
 	private String currDir;
 	
 	// GA specific parameters 
-	int chromosomeDim;
-    int populationDim;
-    double crossoverProb;
-    int randomSelectionChance;
-    int maxGenerations;
-    int numPrelimRuns;
-    int maxPrelimGenerations;
-    double mutationProb;
-    int crossoverType;
-    boolean computeStatistics;
+	private int chromosomeDim;
+	private int populationDim;
+	private double crossoverProb;
+	private int randomSelectionChance;
+	private int maxGenerations;
+	private int numPrelimRuns;
+	private int maxPrelimGenerations;
+	private double mutationProb;
+	private int crossoverType;
+	private boolean computeStatistics;
+    private double greedyRatio;    //ratio of greedy initial population (1 = all greedy, 0 = all random)
 	
 	MyLogger MyLog = new MyLogger(Parameters.class.getName());
 
@@ -37,30 +42,31 @@ public class Parameters {
 	public Parameters() {
 		
 		// general parameters
-		currDir 			= System.getProperty("user.dir");
-		outputFileName    	= currDir + "/output/solutions.csv";
+		mode					= GATS;
+		currDir 				= System.getProperty("user.dir");
+		outputFileName    		= currDir + "/output/solutions.csv";
 		
 		// TS specific parameters
-		movesType         	= MovesType.SWAP;
-		precision         	= 1E-2;
-		iterations        	= 1000;
-		startClient       	= -1;
-		tabuTenure        	= -1;
-		randomSeed		  	= -1;
-		variableTenure    	= false;
+		movesType         		= MovesType.SWAP;
+		precision         		= 1E-2;
+		iterations        		= 1000;
+		startClient       		= -1;
+		tabuTenure        		= -1;
+		randomSeed		  		= -1;
+		variableTenure    		= false;
 		
 		// GA specific parameters
-		//TODO decide the default value for all the GA specific parameters
-//		chromosomeDim = 
-//		populationDim =
-//		crossoverProb = 
-//		randomSelectionChance = 
-//		maxGenerations = 2000;
-//		numPrelimRuns = 0;
-//		maxPrelimGenerations = 2000;
-//		mutationProb =
-//		crossoverType = Crossover.ctTwoPoint;
-//		computeStatistics = true;
+		chromosomeDim 			= 0; // depends on the number of clients + number of vehicles
+		populationDim 			= 50; 
+		crossoverProb 			= 0.7;
+		crossoverType 			= Crossover.ctTwoPoint;
+		randomSelectionChance 	= 10;
+		maxGenerations 			= 4000;
+		numPrelimRuns 			= 0;
+		maxPrelimGenerations	= 500;
+		mutationProb 			= 0.06;
+		computeStatistics 		= true;
+		greedyRatio 			= 0;
 				
 		
 	}
@@ -71,8 +77,16 @@ public class Parameters {
 		if(args.length % 2 == 0){
 			for(int i = 0; i < args.length; i += 2){
 				switch (args[i]) {
-					case "-mT":
-						movesType = MovesType.SWAP;
+				// general parameters
+					case "-m":
+						String m = args[i+1];
+						if (m.compareTo(GATS)==0 || m.compareTo(TS)==0)
+							mode = m;
+						else{
+							String msg = "Execution mode argument must be \"gats\" or \"ts\". Set to default \"gats\"!";
+							MyLog.warning(Parameters.class.getName(), "updateParameters(String[] args)", msg);
+							throw new Exception(msg);
+						}
 						break;
 					case "-if":
 						inputFileName = args[i+1];
@@ -80,16 +94,16 @@ public class Parameters {
 					case "-of":
 						outputFileName = args[i+1];
 						break;
+				// TS specific parameters
 					case "-p":
 						precision = Double.parseDouble(args[i+1]);
 						break;
 					case "-it":
 						iterations = Integer.parseInt(args[i+1]);
 						break;
-//					we are using the randomization in the initpopulation based on GREEDY_RATIO.
-//					case "-sc":
-//						startClient = Integer.parseInt(args[i+1]);
-//						break;
+					case "-sc":
+						startClient = Integer.parseInt(args[i+1]);
+						break;
 					case "-rs":
 						randomSeed = Integer.parseInt(args[i+1]);
 						break;
@@ -102,13 +116,52 @@ public class Parameters {
 						}else if(args[i+1].equalsIgnoreCase("false")){
 							setVariableTenure(false);
 						}else {
-							MyLog.warning(Parameters.class.getName(), "updateParameters(String[] args)", "Variable tenure argument must be true of false. Set to default false!");
-							throw new Exception();
+							String msg = "Variable tenure argument must be true of false. Set to default false!";
+							MyLog.warning(Parameters.class.getName(), "updateParameters(String[] args)", msg);
+							throw new Exception(msg);
 						}
 						break;
+				// GA specific parameters
+					case "-pd":
+						populationDim = Integer.parseInt(args[i+1]);
+						break;
+					case "-cp":
+						crossoverProb = Double.parseDouble(args[i+1]);
+						break;
+					case "-rsc":
+						randomSelectionChance = Integer.parseInt(args[i+1]);
+						break;
+					case "-mg":
+						maxGenerations = Integer.parseInt(args[i+1]);
+						break;
+					case "-npr":
+						numPrelimRuns = Integer.parseInt(args[i+1]);
+					    break;
+					case "-mpg":
+						maxPrelimGenerations = Integer.parseInt(args[i+1]);
+						break;
+					case "-mp":
+						mutationProb = Double.parseDouble(args[i+1]);
+						break;
+					case "-cs":
+						if(args[i+1].equalsIgnoreCase("true")){
+							setComputeStatistics(true);
+						}else if(args[i+1].equalsIgnoreCase("false")){
+							setComputeStatistics(false);
+						}else {
+							String msg = "Compute Statistics argument must be true of false. Set to default true!";
+							MyLog.warning(Parameters.class.getName(), "updateParameters(String[] args)", msg);
+							throw new Exception(msg);
+						}
+						break;
+					case "-gr":
+						greedyRatio = Double.parseDouble(args[i+1]);
+						break;
+					
 					default: {
-						MyLog.err(Parameters.class.getName(), "updateParameters(String[] args)", "Unknown type of argument: " + args[i]);
-						throw new Exception();
+						String msg = "Unknown type of argument: " + args[i];
+						MyLog.err(Parameters.class.getName(), "updateParameters(String[] args)", msg);
+						throw new Exception(msg);
 					}
 				}
 			}
@@ -122,16 +175,28 @@ public class Parameters {
 		//TODO modify to print also GA specific parameters
 		
 		StringBuffer print = new StringBuffer();
-		print.append("\n" + "--- Parameters: -------------------------------------");
-		print.append("\n" + "| Moves Type= " + movesType);
+		print.append("\n" + "--- General Parameters: -------------------------------------");
 		print.append("\n" + "| Input File Name= " + inputFileName);
 		print.append("\n" + "| Output File Name= " + outputFileName);
+		print.append("\n" + "--- TS-specific Parameters: ---------------------------------");
+		print.append("\n" + "| Moves Type= " + movesType);
 		print.append("\n" + "| Precision: " + precision);
 		print.append("\n" + "| Iterations: " + iterations);
 		print.append("\n" + "| Start Client: " + startClient);
 		print.append("\n" + "| Random Seed: " + randomSeed);
 		print.append("\n" + "| Tabu Tenure: " + tabuTenure);
 		print.append("\n" + "| Variable Tenure: " + variableTenure);
+		print.append("\n" + "--- GA-specific Parameters: ---------------------------------");
+		print.append("\n" + "| Chromosome Dim = " + chromosomeDim);
+		print.append("\n" + "| Population Dim: " + populationDim);
+		print.append("\n" + "| Crossover Probability: " + crossoverProb);
+		print.append("\n" + "| Crossover Type: " + crossoverType);
+		print.append("\n" + "| Random Selection Chance: " + randomSelectionChance);
+		print.append("\n" + "| Max Generations: " + maxGenerations);
+		print.append("\n" + "| Num Preliminary Runs: " + numPrelimRuns);
+		print.append("\n" + "| Max Preliminary Generations: " + maxPrelimGenerations);
+		print.append("\n" + "| Mutation Probability = " + mutationProb);
+		print.append("\n" + "| Greedy Ratio = " + greedyRatio);
 		print.append("\n" + "------------------------------------------------------");
 		return print.toString();	
 	}
@@ -259,4 +324,94 @@ public class Parameters {
 	public void setCurrDir(String currDir) {
 		this.currDir = currDir;
 	}
+
+	public int getChromosomeDim() {
+		return chromosomeDim;
+	}
+
+	public void setChromosomeDim(int chromosomeDim) {
+		this.chromosomeDim = chromosomeDim;
+	}
+
+	public int getPopulationDim() {
+		return populationDim;
+	}
+
+	public void setPopulationDim(int populationDim) {
+		this.populationDim = populationDim;
+	}
+
+	public double getCrossoverProb() {
+		return crossoverProb;
+	}
+
+	public void setCrossoverProb(double crossoverProb) {
+		this.crossoverProb = crossoverProb;
+	}
+
+	public int getRandomSelectionChance() {
+		return randomSelectionChance;
+	}
+
+	public void setRandomSelectionChance(int randomSelectionChance) {
+		this.randomSelectionChance = randomSelectionChance;
+	}
+
+	public int getMaxGenerations() {
+		return maxGenerations;
+	}
+
+	public void setMaxGenerations(int maxGenerations) {
+		this.maxGenerations = maxGenerations;
+	}
+
+	public int getNumPrelimRuns() {
+		return numPrelimRuns;
+	}
+
+	public void setNumPrelimRuns(int numPrelimRuns) {
+		this.numPrelimRuns = numPrelimRuns;
+	}
+
+	public int getMaxPrelimGenerations() {
+		return maxPrelimGenerations;
+	}
+
+	public void setMaxPrelimGenerations(int maxPrelimGenerations) {
+		this.maxPrelimGenerations = maxPrelimGenerations;
+	}
+
+	public double getMutationProb() {
+		return mutationProb;
+	}
+
+	public void setMutationProb(double mutationProb) {
+		this.mutationProb = mutationProb;
+	}
+
+	public int getCrossoverType() {
+		return crossoverType;
+	}
+
+	public void setCrossoverType(int crossoverType) {
+		this.crossoverType = crossoverType;
+	}
+
+	public boolean isComputeStatistics() {
+		return computeStatistics;
+	}
+
+	public void setComputeStatistics(boolean computeStatistics) {
+		this.computeStatistics = computeStatistics;
+	}
+
+	public double getGreedyRatio() {
+		return greedyRatio;
+	}
+
+	public void setGreedyRatio(double greedyRatio) {
+		this.greedyRatio = greedyRatio;
+	}
+	
+	
 }

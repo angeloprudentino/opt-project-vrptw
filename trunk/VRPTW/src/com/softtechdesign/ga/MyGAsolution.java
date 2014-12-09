@@ -25,7 +25,7 @@ public class MyGAsolution {
 	// if any other method could be useful, add it.
 
 	private Instance instance;
-	ChromCustomer solution; // the actual solution is a chromosome
+	private ChromCustomer solution; // the actual solution is a chromosome
 
 	/**
 	 * @param instance
