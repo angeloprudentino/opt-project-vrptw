@@ -163,9 +163,10 @@ public class GARoute extends GA {
     protected void doTwoPtCrossover(Chromosome Chrom1, Chromosome Chrom2) {
     	ChromCustomer parent1 = (ChromCustomer)Chrom1;
     	ChromCustomer parent2 = (ChromCustomer)Chrom2;
-    	ChromCustomer child1 = null, child2=null;
-//    	int dimAlphabet = 200;				//TODO IMPOSTARE UNA COSTANTE CON IL NUMERO DI CUSTUMERS
-    	pmX(parent1, parent2, child1, child2, populationDim);	//è giusto il valore contenuto in populationDim??
+    	ChromCustomer child1 = null; //new ChromCustomer();				//TODO ALLOCATE OBJECT CHILD1 and CHILD2
+    	ChromCustomer child2 = null; //new ChromCustomer();
+//    	int dimAlphabet = 200;											//TODO SET THE CORRECT NUMBER OF CUSTUMERS
+    	pmX(parent1, parent2, child1, child2, populationDim);			//è giusto il valore contenuto in populationDim??
     	Chrom1=child1;
     	Chrom2=child2;
     	
@@ -206,7 +207,7 @@ public class GARoute extends GA {
     			for(int i = cutPoint1; i < cutPoint2; i++){
     				child1.setGene(parent2.getGene(i), i);
     				usedValuesChild1[child1.getGene(i).getNumber()] = true;
-    				child2.setGene(parent2.getGene(i), i);
+    				child2.setGene(parent1.getGene(i), i);
     				usedValuesChild2[child2.getGene(i).getNumber()] = true;
     			}
     			
@@ -216,12 +217,12 @@ public class GARoute extends GA {
     				//about child 1
     				int pos = applyPmxRule(i, usedValuesChild1, parent1, parent2);
     				child1.setGene(parent1.getGene(pos), i);
-    				usedValuesChild1[child1.getGene(pos).getNumber()] = true;
+    				usedValuesChild1[parent1.getGene(pos).getNumber()] = true;
     				
     				//about child 2
     				pos = applyPmxRule(i, usedValuesChild2, parent2, parent1);
     				child2.setGene(parent2.getGene(pos), i);
-    				usedValuesChild2[child2.getGene(pos).getNumber()] = true;
+    				usedValuesChild2[parent2.getGene(pos).getNumber()] = true;
     			}
     			
     			//part before first cut point
@@ -230,12 +231,12 @@ public class GARoute extends GA {
     				//about child 1
     				int pos = applyPmxRule(i, usedValuesChild1, parent1, parent2);
     				child1.setGene(parent1.getGene(pos), i);
-    				usedValuesChild1[child1.getGene(pos).getNumber()] = true;
+    				usedValuesChild1[parent1.getGene(pos).getNumber()] = true;
     				
     				//about child 2
     				pos = applyPmxRule(i, usedValuesChild2, parent2, parent1);
     				child2.setGene(parent2.getGene(pos), i);
-    				usedValuesChild2[child2.getGene(pos).getNumber()] = true;
+    				usedValuesChild2[parent2.getGene(pos).getNumber()] = true;
     			}
     		}catch(GAException e){
     			System.out.println(e);
@@ -245,7 +246,7 @@ public class GARoute extends GA {
 	private int applyPmxRule (int i, boolean[] booleanArray, ChromCustomer parentA, ChromCustomer parentB) throws GAException{
 		int pos = i;
 		while(alreadyUsed(booleanArray,parentA.getGene(pos)) == true){
-			pos = parentB.getPosition(parentA.getGene(pos));
+			pos = parentB.getPositionNumber(parentA.getGene(pos));
 			if(pos < 0) throw new GAException("Crossover error"); 
 		}
 		return pos;

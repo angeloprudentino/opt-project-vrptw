@@ -248,6 +248,13 @@ public class ChromCustomer extends Chromosome {
 		}
 		return -1; // error code because this method have to find the value into the array
 	}
+	
+	public int getPositionNumber(Customer gene) {
+		for(int i = 0; i < genes.length; i++){
+			if(genes[i].getNumber() == gene.getNumber()) return i;
+		}
+		return -1; //error code because this method have to find the value into the array
+	}
 
 	/**
 	 * @param genes the genes to set
