@@ -4,6 +4,8 @@
  */
 package com.softtechdesign.ga;
 
+import java.util.Arrays;
+
 import com.mdvrp.Cost;
 import com.mdvrp.Customer;
 import com.mdvrp.Depot;
@@ -263,4 +265,11 @@ public class ChromCustomer extends Chromosome {
 		this.genes = genes;
 	}
 
+	@Override
+	public String toString() {
+		return "ChromCustomer [genes=" + Arrays.toString(genes) + ", cost=" + cost + "]";
+	}
+
+	
+	
 }

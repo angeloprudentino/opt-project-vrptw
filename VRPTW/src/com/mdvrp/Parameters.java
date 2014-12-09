@@ -86,9 +86,10 @@ public class Parameters {
 					case "-it":
 						iterations = Integer.parseInt(args[i+1]);
 						break;
-					case "-sc":
-						startClient = Integer.parseInt(args[i+1]);
-						break;
+//					we are using the randomization in the initpopulation based on GREEDY_RATIO.
+//					case "-sc":
+//						startClient = Integer.parseInt(args[i+1]);
+//						break;
 					case "-rs":
 						randomSeed = Integer.parseInt(args[i+1]);
 						break;

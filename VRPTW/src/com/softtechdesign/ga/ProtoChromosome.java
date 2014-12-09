@@ -50,18 +50,20 @@ public class ProtoChromosome {
 		// routes[][] -> MyTSsolution
 		//just a sort of wrapping. TSsol is created with an empty builder
 		MyTSsolution TSsol = new MyTSsolution();
+		TSsol.setInstance(instance);
 		TSsol.setRoutes(routes);
 		
-		//MyTSsolution -> Customer[]
-		Customer[] GaSol = MyConverter.ConvertTSGA(TSsol);
+		//MyTSsolution -> MyGaSolution
+		MyGAsolution gaSol = MyConverter.ConvertTSGA(TSsol);
 		
-		//Customer[] -> ChromCustomer 
-		ChromCustomer chrom = new ChromCustomer(GaSol.length, instance);
-		int i = 0;
-		for(Customer c: GaSol)
-			chrom.setGene(c, i++);
-		
-		return chrom;
+//		OLD
+//		//Customer[] -> ChromCustomer 
+//		ChromCustomer chrom = new ChromCustomer(GaSol.solution.length(), instance);
+//		int i = 0;
+//		for(MyGAsolution g: GaSol)
+//			chrom.setGenes(g, i++);
+//		
+		return gaSol.getSolution();
 	}
 	
 	public boolean checkDuration(int vehic, Customer candidate){

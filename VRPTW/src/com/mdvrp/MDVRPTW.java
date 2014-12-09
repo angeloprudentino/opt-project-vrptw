@@ -86,6 +86,30 @@ public class MDVRPTW {
 					"new GARoute(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations, numPrelimRuns, maxPrelimGenerations, mutationProb, crossoverType, computeStatistics, instance) => GA search program created");
 
 			/*
+    	     *	JUST FOR DEBUGGIN PURPOSES, CAN BE REMOVED WHENEVER YOU WANT 
+    	     */
+//            GARoute TSPTW = new GARoute(
+//            		instance.getCustomersNr() + instance.getVehiclesNr(),
+//            		100,
+//            		0.5,
+//            		0,
+//            		100,
+//            		0,
+//            		100,
+//            		0,
+//            		0, 
+//            		false,
+//            		instance,
+//            		0.5
+//            		);
+//            Thread threadTSPTW = new Thread(TSPTW);
+//            threadTSPTW.start();
+            /*
+             * 	END
+             */
+			
+			
+			/*
 			 * initial_GA_sol = new MyGAsolution(instance);
 			 * //initial_TS_Sol.ConvertTSGA(); //TODO fix this call Thread
 			 * GAThread = new Thread(GAsearch); GAThread.start();
