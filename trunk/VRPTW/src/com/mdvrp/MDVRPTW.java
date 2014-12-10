@@ -28,14 +28,12 @@ public class MDVRPTW {
 		// Tabu search variables
 		MySearchProgram TSsearch;
 		MyTSsolution initial_TS_sol;
-		MyTSsolution best_TS_sol;
 		MyObjectiveFunction objFunc;
 		MyMoveManager moveManager;
 		TabuList tabuList;
 
 		// GA algorithm variables
 		GARoute GAsearch;
-		MyGAsolution initial_GA_sol;
 		MyGAsolution best_GA_sol;
 
 		try {
@@ -46,8 +44,8 @@ public class MDVRPTW {
 			MyLog.info(class_name, "main", "parameters.updateParameters(args) => parameters set");
 
 			if (parameters.getInputFileName() == null) {
-				MyLog.err(class_name, "main",
-						"parameters.getInputFileName() = null => You must specify an input file name");
+				MyLog.err(class_name, "main", "parameters.getInputFileName() = null => You must specify an input file name");
+				System.err.println("You must specify an input file name [-if file]");
 				return;
 			}
 
@@ -62,67 +60,38 @@ public class MDVRPTW {
 			MyLog.info(class_name, "main", "instance.populateFromHombergFile(parameters.getInputFileName()) => instnce populated from file " + parameters.getInputFileName());
 			MyLog.info(class_name, "main", parameters.toString());
 
-			// Init memory for Genetic Algorithm
-			MyLog.info(class_name, "main", "creating required GA data structure");
-			// TODO enable the GA constructor
-			// GAsearch = new GARoute(parameters, instance);
-			MyLog.info(class_name, "main", "new GARoute(parameters, instance) => GA search program created");
-
-			/*
-    	     *	JUST FOR DEBUGGIN PURPOSES, CAN BE REMOVED WHENEVER YOU WANT 
-    	     */
-//            GARoute TSPTW = new GARoute(
-//            		instance.getCustomersNr() + instance.getVehiclesNr(),
-//            		100,
-//            		0.5,
-//            		0,
-//            		100,
-//            		0,
-//            		100,
-//            		0,
-//            		0, 
-//            		false,
-//            		instance,
-//            		0.5
-//            		);
-//            Thread threadTSPTW = new Thread(TSPTW);
-//            threadTSPTW.start();
-            /*
-             * 	END
-             */
-			
-			
-			/*
-			 * initial_GA_sol = new MyGAsolution(instance);
-			 * //initial_TS_Sol.ConvertTSGA(); //TODO fix this call Thread
-			 * GAThread = new Thread(GAsearch); GAThread.start();
-			 * MyLog.info(class_name, "main", "GAThread.start(); => START");
-			 * //wait for the search thread to finish try { // in order to apply
-			 * wait on an object synchronization must be done synchronized
-			 * (instance) { instance.wait(); } } catch (InterruptedException e1)
-			 * { e1.printStackTrace(); MyLog.err(class_name, "main",
-			 * e1.getMessage()); }
-			 * 
-			 * MyLog.info(class_name, "main", "GAThread; => STOP"); best_GA_sol
-			 * = GAsearch.getBestSol();
-			 */
-
-			// Init memory for Tabu Search
-			// TODO this will be removed because initial TS solution comes from
-			// GA
-			MyLog.info(class_name, "main",
-					"creating required TS data structure");
-			// true-> use only TS;
-			// false-> use GA + TS;
-			initial_TS_sol = new MyTSsolution(instance, true);
-			MyLog.info(class_name, "main",
-					"new MySolution(instance) => initial solution instance created");
+			if (parameters.isGATS()){
+				// Init memory for Genetic Algorithm
+				MyLog.info(class_name, "main", "creating required GA data structure");
+				GAsearch = new GARoute(parameters, instance);
+				MyLog.info(class_name, "main", "new GARoute(parameters, instance) => GA search program created");			
+				
+				Thread GAThread = new Thread(GAsearch); 
+				GAThread.start();
+				MyLog.info(class_name, "main", "GAThread.start(); => START");
+				//wait for the search thread to finish 
+				try { // in order to apply wait on an object synchronization must be done 
+					synchronized (instance) {
+						instance.wait();
+					}
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+					MyLog.err(class_name, "main", e1.getMessage());
+				}
+				 
+				 MyLog.info(class_name, "main", "GAThread; => STOP"); 
+				 best_GA_sol = GAsearch.getBestSol();
+				 initial_TS_sol = best_GA_sol.ConvertGATS();
+			}			 
+			else{
+				// Init memory for Tabu Search
+				MyLog.info(class_name, "main", "creating required TS data structure");
+				initial_TS_sol = new MyTSsolution(instance, true);
+				MyLog.info(class_name, "main", "new MySolution(instance) => initial solution instance created");
+			}
 
 			objFunc = new MyObjectiveFunction(instance);
-			MyLog.info(
-					class_name,
-					"main",
-					"new MyObjectiveFunction(instance) => objective function instance created and initialized with MyInitilaSolution");
+			MyLog.info(class_name, "main", "new MyObjectiveFunction(instance) => objective function instance created and initialized with MyInitilaSolution");
 
 			moveManager = new MyMoveManager(instance);
 			MyLog.info(class_name, "main",
@@ -134,44 +103,28 @@ public class MDVRPTW {
 							+ parameters.getMovesType());
 
 			// Tabu list
-			int dimension[] = { instance.getDepotsNr(),
-					instance.getVehiclesNr(), instance.getCustomersNr(), 1, 1 };
-			MyLog.info(class_name, "main",
-					"number of Depots: " + instance.getDepotsNr());
-			MyLog.info(class_name, "main",
-					"number of Vehicles: " + instance.getVehiclesNr());
-			MyLog.info(class_name, "main",
-					"number of Customers: " + instance.getCustomersNr());
+			int dimension[] = {instance.getDepotsNr(), instance.getVehiclesNr(), instance.getCustomersNr(), 1, 1 };
+			MyLog.info(class_name, "main", "number of Depots: " + instance.getDepotsNr());
+			MyLog.info(class_name, "main", "number of Vehicles: " + instance.getVehiclesNr());
+			MyLog.info(class_name, "main", "number of Customers: " + instance.getCustomersNr());
 
 			tabuList = new MyTabuList(parameters.getTabuTenure(), dimension);
-			MyLog.info(class_name, "main",
-					"new MyTabuList(parameters.getTabuTenure(), dimension) =>  Tabu List created");
+			MyLog.info(class_name, "main", "new MyTabuList(parameters.getTabuTenure(), dimension) =>  Tabu List created");
 
 			// Create Tabu Search object
-			TSsearch = new MySearchProgram(instance, initial_TS_sol,
-					moveManager, objFunc, tabuList, false, outPrintSream);
-			MyLog.info(
-					class_name,
-					"main",
-					"new MySearchProgram(instance, initialSol, moveManager, objFunc, tabuList, false, outPrintSream) => TS search program created");
+			TSsearch = new MySearchProgram(instance, initial_TS_sol, moveManager, objFunc, tabuList, false, outPrintSream);
+			MyLog.info(class_name, "main", "new MySearchProgram(instance, initialSol, moveManager, objFunc, tabuList, false, outPrintSream) => TS search program created");
 
 			// Start solving
-			TSsearch.getTabuSearch().setIterationsToGo(
-					parameters.getIterations());
-			MyLog.info(
-					class_name,
-					"main",
-					"search.tabuSearch.setIterationsToGo(parameters.getIterations()) => number of iterations = "
-							+ parameters.getIterations());
+			TSsearch.getTabuSearch().setIterationsToGo(parameters.getIterations());
+			MyLog.info( class_name, "main", "search.tabuSearch.setIterationsToGo(parameters.getIterations()) => number of iterations = " + parameters.getIterations());
 
 			TSsearch.getTabuSearch().startSolving();
-			MyLog.info(class_name, "main",
-					"search.tabuSearch.startSolving(); => START");
+			MyLog.info(class_name, "main", "search.tabuSearch.startSolving(); => START");
 
 			// wait for the search thread to finish
 			try {
-				// in order to apply wait on an object synchronization must be
-				// done
+				// in order to apply wait on an object synchronization must be done
 				synchronized (instance) {
 					instance.wait();
 				}
@@ -182,8 +135,7 @@ public class MDVRPTW {
 
 			duration.stop();
 			MyLog.info(class_name, "main", "time counting stopped");
-			MyLog.info(class_name, "main",
-					"total execution time = " + duration.toString());
+			MyLog.info(class_name, "main", "total execution time = " + duration.toString());
 
 			// Count routes
 			int routesNr = 0;
@@ -192,11 +144,10 @@ public class MDVRPTW {
 					if (TSsearch.feasibleRoutes[i][j].getCustomersLength() > 0)
 						routesNr++;
 			// Print results
-			String outSol = String.format(
-					"param:%s;  cost:%5.2f;  time:%d;  veicles:%4d\r\n",
-					instance.getParameters().getInputFileName(),
-					TSsearch.feasibleCost.total, duration.getSeconds(),
-					routesNr);
+			String outSol = String.format("param:%s;  cost:%5.2f;  time:%d;  veicles:%4d\r\n",
+										  instance.getParameters().getInputFileName(),
+					                      TSsearch.feasibleCost.total, duration.getSeconds(),
+					                      routesNr);
 			System.out.println(outSol);
 			FileWriter fw = new FileWriter(parameters.getOutputFileName(), true);
 			fw.write(outSol);

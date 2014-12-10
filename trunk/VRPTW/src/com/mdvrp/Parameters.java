@@ -6,7 +6,7 @@ import com.softtechdesign.ga.Crossover;
 public class Parameters {
 	
 	private static final String GATS = "gats";
-	private static final String TS = "ts";
+	private static final String TS = "onlyts";
 	
 	// general parameters
 	private String inputFileName;
@@ -22,7 +22,7 @@ public class Parameters {
 	private int tabuTenure;
 	private boolean variableTenure;
 	private String currDir;
-	
+
 	// GA specific parameters 
 	private int chromosomeDim;
 	private int populationDim;
@@ -73,7 +73,6 @@ public class Parameters {
 	
 	public void updateParameters(String[] args) throws Exception
 	{
-		//TODO decide format for GA specific parameters in command line
 		if(args.length % 2 == 0){
 			for(int i = 0; i < args.length; i += 2){
 				switch (args[i]) {
@@ -81,7 +80,7 @@ public class Parameters {
 					case "-m":
 						String m = args[i+1];
 						if (m.compareTo(GATS)==0 || m.compareTo(TS)==0)
-							mode = m;
+							setMode(m);
 						else{
 							String msg = "Execution mode argument must be \"gats\" or \"ts\". Set to default \"gats\"!";
 							MyLog.warning(Parameters.class.getName(), "updateParameters(String[] args)", msg);
@@ -167,6 +166,7 @@ public class Parameters {
 			}
 		}else {
 			MyLog.err(Parameters.class.getName(), "updateParameters(String[] args)", "Parameters are not in correct format");
+			printHelp();
 			throw new Exception();
 		}
 	}
@@ -201,6 +201,9 @@ public class Parameters {
 		return print.toString();	
 	}
 
+	void printHelp(){
+		//TODO print the list of accepted parameters
+	}
 	/**
 	 * @return the movesType
 	 */
@@ -412,6 +415,15 @@ public class Parameters {
 	public void setGreedyRatio(double greedyRatio) {
 		this.greedyRatio = greedyRatio;
 	}
+
+	public void setMode(String mode) {
+		this.mode = mode;
+	}
 	
-	
+	public boolean isGATS(){
+		if (mode.compareTo(GATS)==0)
+			return true;
+		else 
+			return false;
+	}
 }

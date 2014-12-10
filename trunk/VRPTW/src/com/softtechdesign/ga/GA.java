@@ -43,7 +43,7 @@ public abstract class GA implements Runnable
 	
 	/** instance of the problem;
 	 * used only for GARoute*/
-	private Instance instance;
+	protected Instance instance;
 	
     /** probability of a mutation occuring during genetic mating. For example, 0.03 means 3% chance */
     double mutationProb; 
@@ -332,65 +332,62 @@ public abstract class GA implements Runnable
     public int evolve()
     {
         int iGen;
-//        int iPrelimChrom, iPrelimChromToUsePerRun;
+        int iPrelimChrom, iPrelimChromToUsePerRun;
 
         MyLog.info(class_name, "evolve()", "GA start time: " + new Date().toString());
 
-        // Angelo -> 05/12/2014 (i think we don't need preliminary runs
-        
-//        if (numPrelimRuns > 0)
-//        {
-//            iPrelimChrom = 0;
-//            //number of fittest prelim chromosomes to use with final run
-//            iPrelimChromToUsePerRun = populationDim / numPrelimRuns;
-//
-//            for (int iPrelimRuns = 1; iPrelimRuns <= numPrelimRuns; iPrelimRuns++)
-//            {
-//                iGen = 0;
-//                initPopulation();
-//
-//                //create a somewhat fit chromosome population for this prelim run
-//                while (iGen < maxPrelimGenerations)
-//                {
-//                	MyLog.info(class_name, "evolve()", iPrelimRuns + " of " + numPrelimRuns + " prelim runs --> " +
-//                                       (iGen + 1) + " of " + maxPrelimGenerations + " generations");
-//
-//                    computeFitnessRankings();
-//                    doGeneticMating();
-//                    copyNextGenToThisGen();
-//
-//                    if (computeStatistics == true)
-//                    {
-//                        this.genAvgDeviation[iGen] = getAvgDeviationAmongChroms();
-//                        this.genAvgFitness[iGen] = getAvgFitness();
-//                    }
-//                    iGen++;
-//                }
-//
-//                computeFitnessRankings();
-//
-//                //copy these somewhat fit chromosomes to the main chromosome pool
-//                int iNumPrelimSaved = 0;
-//                for (int i = 0; i < populationDim && iNumPrelimSaved < iPrelimChromToUsePerRun; i++)
-//                    if (this.chromosomes[i].fitnessRank >= populationDim - iPrelimChromToUsePerRun)
-//                    {
-//                        this.prelimChrom[iPrelimChrom + iNumPrelimSaved].copyChromGenes(this.chromosomes[i]);
-//                        //store (remember) these fit chroms
-//                        iNumPrelimSaved++;
-//                    }
-//                iPrelimChrom += iNumPrelimSaved;
-//            }
-//            for (int i = 0; i < iPrelimChrom; i++)
-//                this.chromosomes[i].copyChromGenes(this.prelimChrom[i]);
-//            MyLog.info(class_name, "evolve()", "INITIAL POPULATION AFTER PRELIM RUNS:");
-//        }
-//        else
-//        	MyLog.info(class_name, "evolve()", "INITIAL POPULATION (NO PRELIM RUNS):");
+        // Angelo -> 05/12/2014 (i think we don't need preliminary runs      
+        if (numPrelimRuns > 0)
+        {
+            iPrelimChrom = 0;
+            //number of fittest prelim chromosomes to use with final run
+            iPrelimChromToUsePerRun = populationDim / numPrelimRuns;
 
-        //Add Preliminary Chromosomes to list box
-        MyLog.info(class_name, "evolve()", "initPopulation() => called;");
-        initPopulation(); //Angelo -> 28/11/2014
-        addChromosomesToLog(0, chromosomeDim);
+            for (int iPrelimRuns = 1; iPrelimRuns <= numPrelimRuns; iPrelimRuns++)
+            {
+                iGen = 0;
+                initPopulation();
+
+                //create a somewhat fit chromosome population for this prelim run
+                while (iGen < maxPrelimGenerations)
+                {
+                	MyLog.info(class_name, "evolve()", iPrelimRuns + " of " + numPrelimRuns + " prelim runs --> " + (iGen + 1) + " of " + maxPrelimGenerations + " generations");
+
+                    computeFitnessRankings();
+                    doGeneticMating();
+                    copyNextGenToThisGen();
+
+                    if (computeStatistics == true)
+                    {
+                        this.genAvgDeviation[iGen] = getAvgDeviationAmongChroms();
+                        this.genAvgFitness[iGen] = getAvgFitness();
+                    }
+                    iGen++;
+                }
+
+                computeFitnessRankings();
+
+                //copy these somewhat fit chromosomes to the main chromosome pool
+                int iNumPrelimSaved = 0;
+                for (int i = 0; i < populationDim && iNumPrelimSaved < iPrelimChromToUsePerRun; i++)
+                    if (this.chromosomes[i].fitnessRank >= populationDim - iPrelimChromToUsePerRun)
+                    {
+                        this.prelimChrom[iPrelimChrom + iNumPrelimSaved].copyChromGenes(this.chromosomes[i]);
+                        //store (remember) these fit chroms
+                        iNumPrelimSaved++;
+                    }
+                iPrelimChrom += iNumPrelimSaved;
+            }
+            for (int i = 0; i < iPrelimChrom; i++)
+                this.chromosomes[i].copyChromGenes(this.prelimChrom[i]);
+            MyLog.info(class_name, "evolve()", "INITIAL POPULATION AFTER PRELIM RUNS:");
+        }
+        else{
+        	MyLog.info(class_name, "evolve()", "INITIAL POPULATION (NO PRELIM RUNS):");
+            //Add Preliminary Chromosomes to list box
+            initPopulation(); //Angelo -> 28/11/2014
+        }
+        addChromosomesToLog(0, populationDim);
 
         iGen = 0;
         while (iGen < maxGenerations)
@@ -410,15 +407,13 @@ public abstract class GA implements Runnable
             iGen++;
         }
 
-        MyLog.info(class_name, "evolve()", "GEN " + (iGen + 1) + " AVG FITNESS = " + this.genAvgFitness[iGen-1] +
-                           " AVG DEV = " + this.genAvgDeviation[iGen-1]);
+        MyLog.info(class_name, "evolve()", "GEN " + (iGen + 1) + " AVG FITNESS = " + this.genAvgFitness[iGen-1] + " AVG DEV = " + this.genAvgDeviation[iGen-1]);
 
-        addChromosomesToLog(iGen, chromosomeDim); //display Chromosomes to system.out
+        addChromosomesToLog(iGen, populationDim); //display Chromosomes to system.out
 
         computeFitnessRankings();
         MyLog.info(class_name, "evolve()", "Best Chromosome Found: ");
-        MyLog.info(class_name, "evolve()", this.chromosomes[this.bestFitnessChromIndex].getGenesAsStr() +
-                           " Fitness= " + this.chromosomes[this.bestFitnessChromIndex].fitness);
+        MyLog.info(class_name, "evolve()", this.chromosomes[this.bestFitnessChromIndex].getGenesAsStr() + " Fitness= " + this.chromosomes[this.bestFitnessChromIndex].fitness);
 
         MyLog.info(class_name, "evolve()", "GA end time: " + new Date().toString());
         return (iGen);
