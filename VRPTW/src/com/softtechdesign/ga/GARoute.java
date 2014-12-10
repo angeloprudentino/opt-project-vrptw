@@ -33,7 +33,6 @@ public class GARoute extends GA {
 	 */
 	private double greedyRatio;
     
-	private Instance instance;
     private MyGAsolution best_feasible_sol; //TODO we need to store the best feasible solution of the GA at each iteration
 
     /**
@@ -55,7 +54,7 @@ public class GARoute extends GA {
 		
 		super.setInstance(instance);
 		
-		this.instance = instance;
+		super.setInstance(instance); 
 		this.best_feasible_sol = new MyGAsolution(instance);
 		this.greedyRatio = p.getGreedyRatio();
     }
