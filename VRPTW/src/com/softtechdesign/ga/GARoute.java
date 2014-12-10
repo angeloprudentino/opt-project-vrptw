@@ -164,36 +164,24 @@ public class GARoute extends GA {
     }
 
     /** 
-     * @see com.softtechdesign.ga.GA#doTwoPtCrossover(com.softtechdesign.ga.Chromosome, com.softtechdesign.ga.Chromosome)
+     * @see partially mapped crossover pmX
+     * @author: Luca Boni
+     * @date: 28/11/2014
      */
     @Override
     protected void doTwoPtCrossover(Chromosome Chrom1, Chromosome Chrom2) {
     	ChromCustomer parent1 = (ChromCustomer)Chrom1;
     	ChromCustomer parent2 = (ChromCustomer)Chrom2;
-    	ChromCustomer child1 = null; //new ChromCustomer();				//TODO ALLOCATE OBJECT CHILD1 and CHILD2
-    	ChromCustomer child2 = null; //new ChromCustomer();
-//    	int dimAlphabet = 200;											//TODO SET THE CORRECT NUMBER OF CUSTUMERS
-    	pmX(parent1, parent2, child1, child2, populationDim);			//� giusto il valore contenuto in populationDim??
-    	Chrom1=child1;
-    	Chrom2=child2;
-    	
-    }
-    
-    /** 
-     * @see partially mapped crossover pmX
-     * @author: Luca Boni
-     * @date: 28/11/2014
-     */
-	private void pmX(ChromCustomer parent1,ChromCustomer parent2,
-			ChromCustomer child1,ChromCustomer child2,
-			/*int cutPoint1,int cutPoint2,*/ int dimAlphabet){
-	    
-		boolean[] usedValuesChild1 = new boolean[dimAlphabet];
-		boolean[] usedValuesChild2 = new boolean[dimAlphabet];
+    	ChromCustomer child1 = new ChromCustomer(parent1.length(), instance);
+    	ChromCustomer child2 = new ChromCustomer(parent2.length(), instance);
+    	boolean[] usedValuesChild1 = new boolean[populationDim];
+		boolean[] usedValuesChild2 = new boolean[populationDim];
+		
 		int arrayDimension = parent1.length();
-		int cutPoint1 = (int)(Math.random()*100000)%arrayDimension;
-		int cutPoint2 = (int)(Math.random()*100000)%arrayDimension;
-		while((cutPoint2 = (int)(Math.random()*100000)%arrayDimension) == cutPoint1); // to avoid cutPoint1 == cutPoint2
+		int cutPoint1 = (int)(Math.random()*arrayDimension);
+		int cutPoint2;// = (int)(Math.random()*arrayDimension);
+		
+		while((cutPoint2 = (int)(Math.random()*arrayDimension)) == cutPoint1); // to avoid cutPoint1 == cutPoint2
 		
 		//cut Point1 must be the first one
 		if(cutPoint1 > cutPoint2){
@@ -205,7 +193,7 @@ public class GARoute extends GA {
     	    try{
     	    	
     			//initialization of boolean arrays
-    			for(int i=0; i<dimAlphabet; i++){
+    			for(int i=0; i<populationDim; i++){
     				usedValuesChild1[i] = false;
     				usedValuesChild2[i] = false;
     				}
@@ -248,7 +236,10 @@ public class GARoute extends GA {
     		}catch(GAException e){
     			System.out.println(e);
     		}
-	}
+    	
+    	parent1.setGenes(child1.getGenes());
+    	parent2.setGenes(child2.getGenes());
+    }
 
 	private int applyPmxRule (int i, boolean[] booleanArray, ChromCustomer parentA, ChromCustomer parentB) throws GAException{
 		int pos = i;
