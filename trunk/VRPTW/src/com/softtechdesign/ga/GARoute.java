@@ -283,5 +283,10 @@ public class GARoute extends GA {
 			best_feasible_sol.UpdateSolution((ChromCustomer) chromosomes[bestFitnessChromIndex]);
 			return best_feasible_sol;
 		}
+		
+		private double getRandom(double min, double max){
+			//TODO
+			return 0;
+		}
 
 }
