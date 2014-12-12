@@ -91,7 +91,8 @@ public class MyGAsolution {
 		Customer[] GACustArray = getSolution().getGenes();
 
 		// Write in the routes matrix
-		for (int i = 1; i < GACustArray.length; i++) {
+		int len = GACustArray.length;
+		for (int i = 1; i < len; i++) {
 			// If the current customer is a depot,
 			if (GACustArray[i].getNumber() == instance.getCustomersNr()) {
 				// write the customer list in the routes matrix (edited method)

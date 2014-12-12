@@ -35,7 +35,9 @@ public class ChromCustomer extends Chromosome {
      */
     protected ChromCustomer(int iGenesDim, Instance instance)
     {
-        this.setGenes(new Customer[iGenesDim]);
+        this.genes = new Customer[iGenesDim];
+        for(int i=0; i<iGenesDim; i++)
+        	genes[i] = new Customer();
         this.instance = instance;
         this.cost = new Cost();
         buildDepots();
@@ -82,7 +84,7 @@ public class ChromCustomer extends Chromosome {
     
     protected void setGene(Customer gene, int geneIndex)
     {
-        getGenes()[geneIndex] = gene;
+        genes[geneIndex] = gene;
     }
 
     /**
@@ -123,13 +125,17 @@ public class ChromCustomer extends Chromosome {
         int genesLength = getGenes().length;
         
         StringBuffer sb = new StringBuffer("");
-        for (int i = 0; i < genesLength; i++)
+        for (int i = 0, j = 0; i < genesLength; i++)
         {
-        	if(getGenes()[i].getNumber() == getDepotNum())
-        		sb.append("\n  [" + i + "] = ");
+        	int c1 = getGenes()[i].getNumber();
+        	int c2 = getGenes()[(i+1)%genesLength].getNumber();
+        	if(c1 == getDepotNum())
+        		sb.append("\n  [" + (j++) + "] = ");
             sb.append(getGenes()[i].toString());
+            if(c2 != getDepotNum())
+        		sb.append(" - ");
         }
-        sb.append("\n");
+        sb.append("\n\n");
         sb.append(cost.toString());
         return (sb.toString());
     }
@@ -142,7 +148,7 @@ public class ChromCustomer extends Chromosome {
      */
     protected Customer getGene(int iGene)
     {
-        return (this.getGenes()[iGene]);
+        return genes[iGene];
     }
     
     /**
@@ -251,8 +257,10 @@ public class ChromCustomer extends Chromosome {
 	}
 	
 	public int getPositionNumber(Customer gene) {
-		for(int i = 0; i < genes.length; i++){
-			if(genes[i].getNumber() == gene.getNumber()) return i;
+		int len = genes.length;
+		for(int i = 0; i < len; i++){
+			if(genes[i].getNumber() == gene.getNumber()) 
+				return i;
 		}
 		return -1; //error code because this method have to find the value into the array
 	}

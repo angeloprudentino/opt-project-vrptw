@@ -54,7 +54,7 @@ public abstract class GAStringsSeq extends GA
                         boolean computeStatistics) throws GAException
     {
         super(chromosomeDim, populationDim, crossoverProb, randomSelectionChance, maxGenerations,
-          numPrelimRuns, maxPrelimGenerations, mutationProb, crossoverType, computeStatistics);
+          numPrelimRuns, maxPrelimGenerations, mutationProb, crossoverType, computeStatistics, 0, null);
 
         if (possGeneValues.length < 2)
             throw new GAException("There must be at least 2 possible gene values");

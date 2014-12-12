@@ -172,7 +172,6 @@ public class Parameters {
 	}
 	
 	public String toString(){
-		//TODO modify to print also GA specific parameters
 		
 		StringBuffer print = new StringBuffer();
 		print.append("\n" + "--- General Parameters: -------------------------------------");

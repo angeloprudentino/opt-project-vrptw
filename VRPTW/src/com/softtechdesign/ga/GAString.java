@@ -65,7 +65,9 @@ public abstract class GAString extends GA
               maxPrelimGenerations,
               mutationProb,
               crossoverType,
-              computeStatistics);
+              computeStatistics,
+              0,
+              null);
 
         if (possGeneValues.length() < 2)
             throw new GAException("There must be at least 2 possible gene values");

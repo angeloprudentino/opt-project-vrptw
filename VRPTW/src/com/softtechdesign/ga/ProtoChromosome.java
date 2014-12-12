@@ -5,7 +5,6 @@ import com.TabuSearch.MyTSsolution;
 import com.mdvrp.Cost;
 import com.mdvrp.Customer;
 import com.mdvrp.Instance;
-import com.mdvrp.MyConverter;
 import com.mdvrp.Route;
 import com.mdvrp.Vehicle;
 
@@ -49,12 +48,11 @@ public class ProtoChromosome {
 	public Chromosome toChromosome() {
 		// routes[][] -> MyTSsolution
 		//just a sort of wrapping. TSsol is created with an empty builder
-		MyTSsolution TSsol = new MyTSsolution();
-		TSsol.setInstance(instance);
+		MyTSsolution TSsol = new MyTSsolution(instance, false);
 		TSsol.setRoutes(routes);
 		
 		//MyTSsolution -> MyGaSolution
-		MyGAsolution gaSol = MyConverter.ConvertTSGA(TSsol);
+		MyGAsolution gaSol = TSsol.ConvertTSGA();
 		
 //		OLD
 //		//Customer[] -> ChromCustomer 

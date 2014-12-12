@@ -193,7 +193,9 @@ public abstract class GAFloat extends GA
               maxPrelimGenerations,
               mutationProb,
               crossoverType,
-              computeStatistics);
+              computeStatistics, 
+              0, 
+              null);
 
         if (decPtsPrecision < 0)
             throw new GAException("decPtsPrecision must be zero (for integers) or greater. It cannot be negative.");
