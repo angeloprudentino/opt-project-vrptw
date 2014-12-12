@@ -10,7 +10,7 @@ import java.util.Random;
 import com.TabuSearch.MyTSsolution;
 import com.mdvrp.Customer;
 import com.mdvrp.Instance;
-import com.mdvrp.MyConverter;
+import com.mdvrp.MyLogger;
 import com.mdvrp.Parameters;
 
 
@@ -19,12 +19,14 @@ import com.mdvrp.Parameters;
  * @author Angelo Prudentino
  * @date 22/nov/2014
  */
-public class GARoute extends GA {
+public class GARoute extends GA{
+	
+	private static String class_name = GARoute.class.getName();
+	private static MyLogger MyLog = new MyLogger(class_name);
 
-	//TODO write a function to generate this values randomly
-    private static final double alpha = 0.54;
-    private static final double beta = 0.30;
-    private static final double gamma = 0.19;
+    private double alpha;
+    private double beta;
+    private double gamma;
 	private static final double LOAD_RATIO = 0.10; //used in initPopualtion
 	
 	/*
@@ -32,31 +34,41 @@ public class GARoute extends GA {
 	 * means of the greedy randomized approach of the thesis.   
 	 */
 	private double greedyRatio;
-    
-    private MyGAsolution best_feasible_sol; //TODO we need to store the best feasible solution of the GA at each iteration
-
+	     
     /**
      * @param parameters
      * @param instance
      */
     public GARoute(Parameters p, Instance instance) {
 	
-		super(p.getChromosomeDim(),
-			  p.getPopulationDim(), 
-			  p.getCrossoverProb(), 
-			  p.getRandomSelectionChance(), 
-			  p.getMaxGenerations(), 
-			  p.getNumPrelimRuns(),
-			  p.getMaxPrelimGenerations(), 
-			  p.getMutationProb(), 
-			  p.getCrossoverType(), 
-			  p.isComputeStatistics());
+	            super(p.getChromosomeDim(),
+			          p.getPopulationDim(), 
+					  p.getCrossoverProb(), 
+					  p.getRandomSelectionChance(), 
+					  p.getMaxGenerations(), 
+					  p.getNumPrelimRuns(),
+					  p.getMaxPrelimGenerations(), 
+					  p.getMutationProb(), 
+					  p.getCrossoverType(), 
+					  p.isComputeStatistics(),
+					  p.getGreedyRatio(),
+					  instance);
 		
 		super.setInstance(instance);
 		
 		super.setInstance(instance); 
 		this.best_feasible_sol = new MyGAsolution(instance);
 		this.greedyRatio = p.getGreedyRatio();
+		
+		//create the chromosomes for this population
+        for (int i = 0; i < populationDim; i++)
+        {
+            this.chromosomes[i] = new ChromCustomer(chromosomeDim, instance);
+            this.chromNextGen[i] = new ChromCustomer(chromosomeDim, instance);
+            this.prelimChrom[i] = new ChromCustomer(chromosomeDim, instance);
+        }
+
+        initPopulation();
     }
 
     /**
@@ -79,7 +91,7 @@ public class GARoute extends GA {
     	//for each chromosome to be generated through greedy randomized approach
     	for(int chrom = 0; chrom < nGreedy; chrom++){
     		MyTSsolution tsSol = new MyTSsolution(instance, true); //create the greedy solution
-    		MyGAsolution gaSol = MyConverter.ConvertTSGA(tsSol);
+    		MyGAsolution gaSol = tsSol.ConvertTSGA();
     		this.chromosomes[chrom] = gaSol.getSolution();
         	this.chromosomes[chrom].fitness = getFitness(chrom);
     	}
@@ -174,14 +186,15 @@ public class GARoute extends GA {
     	ChromCustomer parent2 = (ChromCustomer)Chrom2;
     	ChromCustomer child1 = new ChromCustomer(parent1.length(), instance);
     	ChromCustomer child2 = new ChromCustomer(parent2.length(), instance);
-    	boolean[] usedValuesChild1 = new boolean[populationDim];
-		boolean[] usedValuesChild2 = new boolean[populationDim];
+    	boolean[] usedValuesChild1 = new boolean[chromosomeDim];
+		boolean[] usedValuesChild2 = new boolean[chromosomeDim];
 		
-		int arrayDimension = parent1.length();
-		int cutPoint1 = (int)(Math.random()*arrayDimension);
+		//Angelo 12/12/2014
+		//int arrayDimension = parent1.length(); --> equal to chromosomeDim
+		int cutPoint1 = (int)(Math.random()*chromosomeDim);
 		int cutPoint2;// = (int)(Math.random()*arrayDimension);
 		
-		while((cutPoint2 = (int)(Math.random()*arrayDimension)) == cutPoint1); // to avoid cutPoint1 == cutPoint2
+		while((cutPoint2 = (int)(Math.random()*chromosomeDim)) == cutPoint1); // to avoid cutPoint1 == cutPoint2
 		
 		//cut Point1 must be the first one
 		if(cutPoint1 > cutPoint2){
@@ -193,7 +206,7 @@ public class GARoute extends GA {
     	    try{
     	    	
     			//initialization of boolean arrays
-    			for(int i=0; i<populationDim; i++){
+    			for(int i=0; i<chromosomeDim; i++){
     				usedValuesChild1[i] = false;
     				usedValuesChild2[i] = false;
     				}
@@ -201,23 +214,27 @@ public class GARoute extends GA {
     			//part between cut points
     			for(int i = cutPoint1; i < cutPoint2; i++){
     				child1.setGene(parent2.getGene(i), i);
-    				usedValuesChild1[child1.getGene(i).getNumber()] = true;
+    				int n1 = child1.getGene(i).getNumber();
+    				usedValuesChild1[n1] = true;
     				child2.setGene(parent1.getGene(i), i);
-    				usedValuesChild2[child2.getGene(i).getNumber()] = true;
+    				int n2 = child2.getGene(i).getNumber();
+    				usedValuesChild2[n2] = true;
     			}
     			
     			//part after second cut point
-    			for(int i = cutPoint2; i < arrayDimension; i++){
+    			for(int i = cutPoint2; i < chromosomeDim; i++){
     				
     				//about child 1
     				int pos = applyPmxRule(i, usedValuesChild1, parent1, parent2);
     				child1.setGene(parent1.getGene(pos), i);
-    				usedValuesChild1[parent1.getGene(pos).getNumber()] = true;
+    				int n1 = child1.getGene(i).getNumber();
+    				usedValuesChild1[n1] = true;
     				
     				//about child 2
     				pos = applyPmxRule(i, usedValuesChild2, parent2, parent1);
     				child2.setGene(parent2.getGene(pos), i);
-    				usedValuesChild2[parent2.getGene(pos).getNumber()] = true;
+    				int n2 = child2.getGene(i).getNumber();
+    				usedValuesChild2[n2] = true;
     			}
     			
     			//part before first cut point
@@ -234,25 +251,26 @@ public class GARoute extends GA {
     				usedValuesChild2[parent2.getGene(pos).getNumber()] = true;
     			}
     		}catch(GAException e){
-    			System.out.println(e);
+    			MyLog.err(class_name, "doTwoPtCrossover(Chromosome Chrom1, Chromosome Chrom2)", e.getMessage());
+    			e.printStackTrace();
     		}
     	
-    	parent1.setGenes(child1.getGenes());
-    	parent2.setGenes(child2.getGenes());
+    	parent1.copyChromGenes(child1);
+    	parent2.copyChromGenes(child2);
     }
 
 	private int applyPmxRule (int i, boolean[] booleanArray, ChromCustomer parentA, ChromCustomer parentB) throws GAException{
 		int pos = i;
-		while(alreadyUsed(booleanArray,parentA.getGene(pos)) == true){
+		int iterations = 0;
+		int number = parentA.getGene(pos).getNumber();
+		while(booleanArray[number] == true && iterations < chromosomeDim){
 			pos = parentB.getPositionNumber(parentA.getGene(pos));
-			if(pos < 0) throw new GAException("Crossover error"); 
+			number = parentA.getGene(pos).getNumber();
+			iterations++;
 		}
+		if(pos < 0) 
+			throw new GAException("Crossover error"); 
 		return pos;
-	}
-
-	private boolean alreadyUsed(boolean[] array, Customer c) {
-		int value = c.getNumber();
-		return array[value];
 	}
     
         /** 
@@ -270,6 +288,7 @@ public class GARoute extends GA {
         protected double getFitness(int iChromIndex) {
     	
     	ChromCustomer chrom = (ChromCustomer) chromosomes[iChromIndex];
+    	updateParameters();
     	chrom.getCost().calculateTotal(alpha, beta, gamma);
     	double total = chrom.getCost().getTotal();
     	
@@ -284,9 +303,14 @@ public class GARoute extends GA {
 			return best_feasible_sol;
 		}
 		
-		private double getRandom(double min, double max){
-			//TODO
-			return 0;
+		private void updateParameters(){
+			alpha = instance.getRandom().nextDouble();
+			beta = instance.getRandom().nextDouble();
+			gamma = instance.getRandom().nextDouble();
+		}
+		
+		public void startSolving(){
+			super.evolve();
 		}
 
 }
