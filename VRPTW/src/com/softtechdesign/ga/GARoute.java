@@ -186,13 +186,10 @@ public class GARoute extends GA{
     	ChromCustomer parent2 = (ChromCustomer)Chrom2;
     	ChromCustomer child1 = new ChromCustomer(parent1.length(), instance);
     	ChromCustomer child2 = new ChromCustomer(parent2.length(), instance);
-    	boolean[] usedValuesChild1 = new boolean[chromosomeDim];
-		boolean[] usedValuesChild2 = new boolean[chromosomeDim];
 		
-		//Angelo 12/12/2014
-		//int arrayDimension = parent1.length(); --> equal to chromosomeDim
+		int depotNumberIdentifier = parent1.getGene(1).getNumber(); //TODO verify this line
 		int cutPoint1 = (int)(Math.random()*chromosomeDim);
-		int cutPoint2;// = (int)(Math.random()*arrayDimension);
+		int cutPoint2;// = (int)(Math.random()*chromosomeDim);
 		
 		while((cutPoint2 = (int)(Math.random()*chromosomeDim)) == cutPoint1); // to avoid cutPoint1 == cutPoint2
 		
@@ -204,6 +201,14 @@ public class GARoute extends GA{
 		}
 		
     	    try{
+    	    	//to translate repetition of depot value into unused values
+    	    	//pmX need chromosomes without repetitions
+    	    	int encriptedDepotParent1 = encriptDepotCode(parent1,depotNumberIdentifier,populationDim);
+    			int encriptedDepotParent2 = encriptDepotCode(parent2,depotNumberIdentifier,populationDim);
+    			int transaltedPopulationDim = populationDim + encriptedDepotParent1;
+    			
+    			boolean[] usedValuesChild1 = new boolean[transaltedPopulationDim];
+    			boolean[] usedValuesChild2 = new boolean[transaltedPopulationDim];
     	    	
     			//initialization of boolean arrays
     			for(int i=0; i<chromosomeDim; i++){
@@ -250,6 +255,13 @@ public class GARoute extends GA{
     				child2.setGene(parent2.getGene(pos), i);
     				usedValuesChild2[parent2.getGene(pos).getNumber()] = true;
     			}
+    			
+    			int decriptedDepotChild1 = decriptDepotCode(child1, depotNumberIdentifier, populationDim);
+				if(decriptedDepotChild1 != encriptedDepotParent1) throw new GAException("translation error 1");
+				
+				int decriptedDepotChild2 = decriptDepotCode(child2, depotNumberIdentifier, populationDim);
+				if(decriptedDepotChild2 != encriptedDepotParent2) throw new GAException("translation error 2");
+    			
     		}catch(GAException e){
     			MyLog.err(class_name, "doTwoPtCrossover(Chromosome Chrom1, Chromosome Chrom2)", e.getMessage());
     			e.printStackTrace();
@@ -259,6 +271,32 @@ public class GARoute extends GA{
     	parent2.copyChromGenes(child2);
     }
 
+    private static int encriptDepotCode(ChromCustomer parentChromosome, int depotNumber, int popDimension) {
+		int count=0;
+		boolean first=true;
+		for(int i=0; i<parentChromosome.length(); i++){
+			if(parentChromosome.getGene(i).getNumber() == depotNumber){
+				if(first){first=false;}
+				else{
+					parentChromosome.getGene(i).setNumber(popDimension + count);
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+	
+	private static int decriptDepotCode(ChromCustomer childChromosome, int depotNumber, int popDimension) {
+		int count=0;
+		for(int i=0; i<childChromosome.length(); i++){
+			if(childChromosome.getGene(i).getNumber() >= popDimension){
+				childChromosome.getGene(i).setNumber(depotNumber);
+				count++;
+			}
+		}
+		return count;
+	}
+    
 	private int applyPmxRule (int i, boolean[] booleanArray, ChromCustomer parentA, ChromCustomer parentB) throws GAException{
 		int pos = i;
 		int iterations = 0;
