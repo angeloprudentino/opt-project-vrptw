@@ -187,7 +187,7 @@ public class GARoute extends GA{
     	ChromCustomer child1 = new ChromCustomer(parent1.length(), instance);
     	ChromCustomer child2 = new ChromCustomer(parent2.length(), instance);
 		
-		int depotNumberIdentifier = parent1.getGene(1).getNumber(); //TODO verify this line
+		int depotNumberIdentifier = parent1.getGene(0).getNumber();
 		int cutPoint1 = (int)(Math.random()*chromosomeDim);
 		int cutPoint2;// = (int)(Math.random()*chromosomeDim);
 		
@@ -203,12 +203,15 @@ public class GARoute extends GA{
     	    try{
     	    	//to translate repetition of depot value into unused values
     	    	//pmX need chromosomes without repetitions
-    	    	int encriptedDepotParent1 = encriptDepotCode(parent1,depotNumberIdentifier,populationDim);
-    			int encriptedDepotParent2 = encriptDepotCode(parent2,depotNumberIdentifier,populationDim);
-    			int transaltedPopulationDim = populationDim + encriptedDepotParent1;
+    	    	int encriptedDepotParent1 = encriptDepotCode(parent1,depotNumberIdentifier);
+    			int encriptedDepotParent2 = encriptDepotCode(parent2,depotNumberIdentifier);
+    			//the +1 represents the "original" depot, the first, which isn't changed.
+    			//int transaltedPopulationDim = chromosomeDim + encriptedDepotParent1 + 1; 
     			
-    			boolean[] usedValuesChild1 = new boolean[transaltedPopulationDim];
-    			boolean[] usedValuesChild2 = new boolean[transaltedPopulationDim];
+//    			boolean[] usedValuesChild1 = new boolean[transaltedPopulationDim];
+//    			boolean[] usedValuesChild2 = new boolean[transaltedPopulationDim];
+    			boolean[] usedValuesChild1 = new boolean[chromosomeDim];
+    			boolean[] usedValuesChild2 = new boolean[chromosomeDim];
     	    	
     			//initialization of boolean arrays
     			for(int i=0; i<chromosomeDim; i++){
@@ -256,10 +259,10 @@ public class GARoute extends GA{
     				usedValuesChild2[parent2.getGene(pos).getNumber()] = true;
     			}
     			
-    			int decriptedDepotChild1 = decriptDepotCode(child1, depotNumberIdentifier, populationDim);
+    			int decriptedDepotChild1 = decriptDepotCode(child1, depotNumberIdentifier);
 				if(decriptedDepotChild1 != encriptedDepotParent1) throw new GAException("translation error 1");
 				
-				int decriptedDepotChild2 = decriptDepotCode(child2, depotNumberIdentifier, populationDim);
+				int decriptedDepotChild2 = decriptDepotCode(child2, depotNumberIdentifier);
 				if(decriptedDepotChild2 != encriptedDepotParent2) throw new GAException("translation error 2");
     			
     		}catch(GAException e){
@@ -267,30 +270,52 @@ public class GARoute extends GA{
     			e.printStackTrace();
     		}
     	
-    	parent1.copyChromGenes(child1);
-    	parent2.copyChromGenes(child2);
+	    	parent1.copyChromGenes(child1);
+	    	parent2.copyChromGenes(child2);
     }
 
-    private static int encriptDepotCode(ChromCustomer parentChromosome, int depotNumber, int popDimension) {
+    private int encriptDepotCode(ChromCustomer parentChromosome, int depotNumber) {
 		int count=0;
 		boolean first=true;
 		for(int i=0; i<parentChromosome.length(); i++){
 			if(parentChromosome.getGene(i).getNumber() == depotNumber){
 				if(first){first=false;}
 				else{
-					parentChromosome.getGene(i).setNumber(popDimension + count);
 					count++;
+					//parentChromosome.getGene(i).setNumber(popDimension + count);
+					//i create a jolly customer, not initialized, just with the right Number.
+					Customer jolly = new Customer();
+					jolly.setNumber(depotNumber + count);
+					parentChromosome.setGene(jolly, i);
 				}
 			}
 		}
 		return count;
 	}
+    
+//    private static int encriptDepotCode(ChromCustomer parentChromosome, int depotNumber, int popDimension) {
+//		int count=0;
+//		boolean first=true;
+//		for(int i=0; i<parentChromosome.length(); i++){
+//			if(parentChromosome.getGene(i).getNumber() == depotNumber){
+//				if(first){first=false;}
+//				else{
+//					parentChromosome.getGene(i).setNumber(popDimension + count);
+//					count++;
+//				}
+//			}
+//		}
+//		return count;
+//	}
+    
+    
 	
-	private static int decriptDepotCode(ChromCustomer childChromosome, int depotNumber, int popDimension) {
+	private int decriptDepotCode(ChromCustomer childChromosome, int depotNumber) {
 		int count=0;
 		for(int i=0; i<childChromosome.length(); i++){
-			if(childChromosome.getGene(i).getNumber() >= popDimension){
-				childChromosome.getGene(i).setNumber(depotNumber);
+			if(childChromosome.getGene(i).getNumber() > depotNumber){
+				//childChromosome.getGene(i).setNumber(depotNumber);
+				childChromosome.setGene(childChromosome.getGene(0), i);
 				count++;
 			}
 		}
