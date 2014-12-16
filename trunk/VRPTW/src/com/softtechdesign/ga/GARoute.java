@@ -90,6 +90,7 @@ public class GARoute extends GA{
     	
     	//for each chromosome to be generated through greedy randomized approach
     	for(int chrom = 0; chrom < nGreedy; chrom++){
+    		instance.getParameters().setStartClient(-1);	//we want the startClient to be picked randomly each time
     		MyTSsolution tsSol = new MyTSsolution(instance, true); //create the greedy solution
     		MyGAsolution gaSol = tsSol.ConvertTSGA();
     		this.chromosomes[chrom] = gaSol.getSolution();
