@@ -384,13 +384,13 @@ public abstract class GA implements Runnable
             }
             for (int i = 0; i < iPrelimChrom; i++)
                 this.chromosomes[i].copyChromGenes(this.prelimChrom[i]);
-            MyLog.info(class_name, "evolve()", "INITIAL POPULATION AFTER PRELIM RUNS:");
+            //MyLog.info(class_name, "evolve()", "INITIAL POPULATION AFTER PRELIM RUNS:");
         }
         else{
-        	MyLog.info(class_name, "evolve()", "INITIAL POPULATION (NO PRELIM RUNS):");
+        	//MyLog.info(class_name, "evolve()", "INITIAL POPULATION (NO PRELIM RUNS):");
         }
         
-        addChromosomesToLog(0, populationDim);
+        //addChromosomesToLog(0, populationDim);
 
         iGen = 0;
         while (iGen < maxGenerations)
@@ -405,25 +405,24 @@ public abstract class GA implements Runnable
                 this.genAvgFitness[iGen] = getAvgFitness();
             }
 
-            MyLog.info(class_name, "evolve()", "best chromosome at iteration " + iGen + ":");
-            MyLog.info(class_name, "evolve()", this.chromosomes[this.bestFitnessChromIndex].getGenesAsStr());
-            System.out.println("Gneration " + (iGen+1) + " completed");
+            //MyLog.info(class_name, "evolve()", "best chromosome at iteration " + iGen + ":");
+            //MyLog.info(class_name, "evolve()", this.chromosomes[this.bestFitnessChromIndex].getGenesAsStr());
+            //System.out.println("Gneration " + (iGen+1) + " completed");
             iGen++;
         }
 
         MyLog.info(class_name, "evolve()", "GEN " + (iGen + 1) + " AVG FITNESS = " + this.genAvgFitness[iGen-1] + " AVG DEV = " + this.genAvgDeviation[iGen-1]);
 
-        addChromosomesToLog(iGen, populationDim); //display Chromosomes to system.out
+        //addChromosomesToLog(iGen, populationDim); 
 
         computeFitnessRankings();
         
         ChromCustomer chr = (ChromCustomer) this.chromosomes[this.bestFitnessChromIndex];
         best_feasible_sol.UpdateSolution(chr);
         MyLog.info(class_name, "evolve()", "Best Chromosome Found: ");
-        MyLog.info(class_name, "evolve()", chr.getGenesAsStr() + " Fitness= " + chr.fitness);
+        MyLog.info(class_name, "evolve()", chr.getGenesAsStr() + " Fitness= " + chr.fitness + "\n--------------------------------------------------");
 
         MyLog.info(class_name, "evolve()", "GA end time: " + new Date().toString());
-        System.out.println("GA end time: " + new Date().toString());
      }
 
     /**
@@ -675,7 +674,7 @@ public abstract class GA implements Runnable
     }
 
     /**
-     * Display chromosome information to System.out
+     * Display chromosome information to Log
      * @param iGeneration
      * @param iNumChromosomesToDisplay
      */

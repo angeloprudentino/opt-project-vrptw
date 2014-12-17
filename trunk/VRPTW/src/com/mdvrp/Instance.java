@@ -19,7 +19,8 @@ public class Instance {
 	private int vehiclesNr;
 	private int customersNr;
 	private int depotsNr;
-	private int daysNr = 1;;
+	private int daysNr = 1;
+	private double vehicleCapacity; //all vehicles have the same capacity
 	private ArrayList<Customer> customers 	= new ArrayList<>(); 		// vector of customers;
 	private ArrayList<Depot> depots 	= new ArrayList<>();       	// vector of depots;
 	private double[][] durations;
@@ -66,12 +67,13 @@ public class Instance {
 			in.nextLine(); // skip vehicle line
 			in.nextLine();
 			vehiclesNr	= in.nextInt();
+			vehicleCapacity = in.nextInt();
 			
 			// read D and Q
 			durations	= new double[depotsNr][daysNr];
 			capacities	= new double[depotsNr][daysNr];
 			durations[0][0] = Double.MAX_VALUE;
-			capacities[0][0] = in.nextInt();
+			capacities[0][0] = vehicleCapacity;
 			
 			// skip unusefull lines
 			in.nextLine();
@@ -482,4 +484,19 @@ public class Instance {
 	public double getPrecision(){
 		return parameters.getPrecision();
 	}
+
+	/**
+	 * @return the vehicleCapacity
+	 */
+	public double getVehicleCapacity() {
+		return vehicleCapacity;
+	}
+
+	/**
+	 * @param vehicleCapacity the vehicleCapacity to set
+	 */
+	public void setVehicleCapacity(double vehicleCapacity) {
+		this.vehicleCapacity = vehicleCapacity;
+	}
+	
 }
