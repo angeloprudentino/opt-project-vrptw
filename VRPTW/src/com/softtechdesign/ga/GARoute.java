@@ -8,6 +8,7 @@ package com.softtechdesign.ga;
 import java.util.Random;
 
 import com.TabuSearch.MyTSsolution;
+import com.mdvrp.Cost;
 import com.mdvrp.Customer;
 import com.mdvrp.Instance;
 import com.mdvrp.MyLogger;
@@ -24,9 +25,9 @@ public class GARoute extends GA{
 	private static String class_name = GARoute.class.getName();
 	private static MyLogger MyLog = new MyLogger(class_name);
 
-    private double alpha;
-    private double beta;
-    private double gamma;
+//    private double alpha;
+//    private double beta;
+//    private double gamma;
 	private static final double LOAD_RATIO = 0.10; //used in initPopualtion
 	
 	/*
@@ -352,11 +353,16 @@ public class GARoute extends GA{
         protected double getFitness(int iChromIndex) {
     	
     	ChromCustomer chrom = (ChromCustomer) chromosomes[iChromIndex];
-    	updateParameters();
-    	chrom.getCost().calculateTotal(alpha, beta, gamma);
-    	double total = chrom.getCost().getTotal();
+    	//updateParameters();
+    	//chrom.getCost().calculateTotal(alpha, beta, gamma);
+    	//chrom.getCost().calculateTotalCostViol();
+    	//double total = chrom.getCost().getTotal();
     	
-    	return 1/total;
+    	Cost c = chrom.getCost();
+    	// i consider all kind of violations in the same way
+    	double gen_viol = c.getDepotTwViol() + c.getDurationViol() + c.getLoadViol() + c.getTwViol(); 
+    	double travel = c.getTravel();
+    	return 1/travel + 1/gen_viol;
         }
 
 		/**
@@ -367,11 +373,11 @@ public class GARoute extends GA{
 			return best_feasible_sol;
 		}
 		
-		private void updateParameters(){
-			alpha = instance.getRandom().nextDouble();
-			beta = instance.getRandom().nextDouble();
-			gamma = instance.getRandom().nextDouble();
-		}
+//		private void updateParameters(){
+//			alpha = instance.getRandom().nextDouble();
+//			beta = instance.getRandom().nextDouble();
+//			gamma = instance.getRandom().nextDouble();
+//		}
 		
 		public void startSolving(){
 			super.evolve();

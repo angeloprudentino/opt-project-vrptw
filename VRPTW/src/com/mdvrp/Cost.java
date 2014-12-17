@@ -90,9 +90,14 @@ public class Cost {
 		this.durationViol += durationviol;
 	}
 	
+	public void setTWViol(double TWviol) {
+		this.twViol = TWviol;
+	}
+
 	public void addTWViol(double TWviol) {
 		this.twViol += TWviol;
 	}
+	
 	
 	/**
 	 * Add cost to the total cost
@@ -197,6 +202,10 @@ public class Cost {
 		this.serviceTime = serviceTime;
 	}
 
+	public void addServiceTime(double serviceTime) {
+		this.serviceTime += serviceTime;
+	}
+
 	/**
 	 * @return the waitingTime
 	 */
@@ -209,6 +218,10 @@ public class Cost {
 	 */
 	public void setWaitingTime(double waitingTime) {
 		this.waitingTime = waitingTime;
+	}
+
+	public void addWaitingTime(double waitingTime) {
+		this.waitingTime += waitingTime;
 	}
 
 	/**
@@ -225,6 +238,10 @@ public class Cost {
 		this.returnToDepotTime = returnToDepotTime;
 	}
 
+	public void addReturnToDepotTime(double returnToDepotTime) {
+		this.returnToDepotTime += returnToDepotTime;
+	}
+
 	/**
 	 * @return the depotTwViol
 	 */
@@ -237,6 +254,10 @@ public class Cost {
 	 */
 	public void setDepotTwViol(double depotTwViol) {
 		this.depotTwViol = depotTwViol;
+	}
+	
+	public void addDepotTwViol(double depotTwViol) {
+		this.depotTwViol += depotTwViol;
 	}
 
 	/**

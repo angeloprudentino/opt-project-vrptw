@@ -86,7 +86,7 @@ public class MDVRPTW {
 				// Init memory for Tabu Search
 				MyLog.info(class_name, "main", "creating required TS data structure");
 				initial_TS_sol = new MyTSsolution(instance, true);
-				MyLog.info(class_name, "main", "new MySolution(instance) => initial solution instance created");
+				MyLog.info(class_name, "main", "new MyTSsolution(instance) => initial solution instance created\n" + initial_TS_sol.toString());
 			}
 
 			objFunc = new MyObjectiveFunction(instance);
@@ -136,6 +136,7 @@ public class MDVRPTW {
 			MyLog.info(class_name, "main", "time counting stopped");
 			MyLog.info(class_name, "main", "total execution time = " + duration.toString());
 
+			MyLog.info(class_name, "main", "final solution = \n" + ((MyTSsolution)TSsearch.getTabuSearch().getBestSolution()).toString());
 			// Count routes
 			int routesNr = 0;
 			for (int i = 0; i < TSsearch.feasibleRoutes.length; ++i)
@@ -148,6 +149,7 @@ public class MDVRPTW {
 					                      TSsearch.feasibleCost.total, duration.getSeconds(),
 					                      routesNr);
 			System.out.println(outSol);
+			System.out.println("execution time: " + duration.toString());
 			FileWriter fw = new FileWriter(parameters.getOutputFileName(), true);
 			fw.write(outSol);
 			fw.close();

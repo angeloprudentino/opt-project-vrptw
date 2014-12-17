@@ -22,7 +22,6 @@ public class Customer {
 	private double twViol;              // value of time window violation, 0 if none
 	private double[] anglesToDepots;
 	
-	private Vehicle vehicle; 					// reference to the serving vehicle; used only by GA
 	
 	public Customer() {
 		xCoordinate          = 0;
@@ -36,7 +35,6 @@ public class Customer {
 		arriveTime           = 0;
 		waitingTime          = 0;
 		twViol               = 0;
-		vehicle 			 = null;
 		
 	}
 	
@@ -57,7 +55,6 @@ public class Customer {
 		this.waitingTime 		= new Double(customer.waitingTime);
 		this.twViol 			= new Double(customer.twViol);
 		this.anglesToDepots 	= customer.anglesToDepots;
-		this.vehicle			= customer.vehicle;
 	}
 
 	/**
@@ -77,7 +74,6 @@ public class Customer {
 		for (int i = 0; i < anglesToDepots.length; ++i) {
 			print.append(anglesToDepots[i] + " ");
 		}
-		print.append("\n" + "| Serving Vehicle: " + vehicle);
 		print.append("\n" + "--------------------------------------------------");
 		return print.toString();
 		
@@ -370,15 +366,6 @@ public class Customer {
 	    return "" + number + "";
 	}
 
-	public Vehicle getVehicle() {
-		return vehicle;
-	}
-
-	public void setVehicle(Vehicle v) {
-		this.vehicle = v;
-	}
-
-	
 
 	/*
 	// get depot i from depot list
