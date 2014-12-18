@@ -67,20 +67,11 @@ public class MDVRPTW {
 				MyLog.info(class_name, "main", "new GARoute(parameters, instance) => GA search program created");			
 				
 				MyLog.info(class_name, "main", "GAThread.start(); => START");
-				GAsearch.startSolving();
-				//wait for the search thread to finish 
-//				try { // in order to apply wait on an object synchronization must be done 
-//					synchronized (instance) {
-//						instance.wait();
-//					}
-//				} catch (InterruptedException e1) {
-//					e1.printStackTrace();
-//					MyLog.err(class_name, "main", e1.getMessage());
-//				}
-				 
-				 MyLog.info(class_name, "main", "GAThread; => STOP"); 
-				 best_GA_sol = GAsearch.getBestSol();
-				 initial_TS_sol = best_GA_sol.ConvertGATS();
+				GAsearch.evolve();				 
+				
+				MyLog.info(class_name, "main", "GAThread; => STOP"); 
+				best_GA_sol = GAsearch.getBestSol();
+				initial_TS_sol = best_GA_sol.ConvertGATS();
 			}			 
 			else{
 				// Init memory for Tabu Search

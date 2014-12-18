@@ -333,7 +333,7 @@ public abstract class GA implements Runnable
      * Main routine that runs the evolution simulation for this population of chromosomes.  
      * @return number of generations
      */
-    protected void evolve()
+    public void evolve()
     {
         int iGen;
         int iPrelimChrom, iPrelimChromToUsePerRun;

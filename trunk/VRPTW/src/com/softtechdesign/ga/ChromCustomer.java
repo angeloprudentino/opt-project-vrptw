@@ -24,6 +24,7 @@ public class ChromCustomer extends Chromosome {
     /** array of genes which comprise this Chromosome */
     private Customer[] genes;
     private Depot[] depots; 		     //some customers are actually depots
+    private int depot_num;
     
     private Instance instance;           // Reference to the instance of the problem 
     private Cost cost;			         // Cost of the entire chromosome
@@ -45,6 +46,7 @@ public class ChromCustomer extends Chromosome {
         this.vehicle_load_viol = new double[nv];
         for(int i=0; i<nv; i++)
         	vehicle_load_viol[i] = -instance.getVehicleCapacity();
+        this.depot_num = instance.getCustomersNr();
         buildDepots();
     }
     
@@ -53,14 +55,12 @@ public class ChromCustomer extends Chromosome {
      * considered in the instance of problem
      */
     private void buildDepots() {
-    	
-	int depot_num = instance.getDepotsNr();
-	depots = new Depot[depot_num];
-	for(int i=0; i<depot_num; i++)
+    int n = instance.getDepotsNr();	
+	depots = new Depot[n];
+	for(int i=0; i<n; i++)
 	    depots[i] = instance.getDepot(i);
     }
     
-  //TODO at the moment I only manage the case of 1 single depot
     private int getDepotNum(){
     	return depots[0].getNumber();
     }
@@ -205,30 +205,18 @@ public class ChromCustomer extends Chromosome {
 	    customerK = chromosome.getGene(k);
 	    // get the preceding customer
 	    customerK_1 = chromosome.getGene(k-1);
-	    
-	    if (k == 1) { 
-	    	//the starting point is always the depot
-	    	
-	    	//getCost().addTravel(getInstance().getTravelTime(getDepotNum(), customerK.getNumber()));
-	    	travelT += getInstance().getTravelTime(getDepotNum(), customerK.getNumber());
-	    	totalTime += travelT;
-    		UpdateLoadViol(vehicle_id, customerK.getCapacity());
-	    } 
-	    
-    	if (k > 1 && customerK.getNumber() != 0) { 
-    		// customerK.getNumber() == 0 --> Depot 
+	    	    
+    	if (customerK.getNumber() != depot_num) { 
     	    
-    		//getCost().addTravel(getInstance().getTravelTime(customerK_1.getNumber(), customerK.getNumber()));
     		travelT += getInstance().getTravelTime(customerK_1.getNumber(), customerK.getNumber());
     		totalTime += travelT;
     		UpdateLoadViol(vehicle_id, customerK.getCapacity());
         } 
     	
-        if((k > 1 && customerK.getNumber() == 0) || (k == iter-1)){ 
-        	// (k > 1 && customerK.getNumber() == 0) -> this is the end of a single route for a vehicle
+        if((customerK.getNumber() == depot_num) || (k == iter-1)){ 
+        	// (customerK.getNumber() == depot_num) -> this is the end of a single route for a vehicle
         	// (k == iter-1) -> the last vehicle goes back to the depot
         	
-    	    //getCost().addTravel(getInstance().getTravelTime(customerK_1.getNumber(), getDepotNum()));
         	if(k == iter-1){
         		travelT += getInstance().getTravelTime(customerK.getNumber(), getDepotNum());
         		totalTime += travelT;
@@ -240,17 +228,8 @@ public class ChromCustomer extends Chromosome {
         	
 			// add the depot time window violation if any
 			twViol += Math.max(0, totalTime - getDepot().getEndTw());
-			//getCost().setTWViol(twViol);
-			// update cost with timings of the depot
-			//getCost().setDepotTwViol(twViol);
-			//getCost().setReturnToDepotTime(totalTime);
-			//getCost().addLoadViol(Math.max(0, vehicle_load_viol[vehicle_id]));
 			loadV += Math.max(0, vehicle_load_viol[vehicle_id]);
-			//not considered in this problem
-			//getCost().addDurationViol(Math.max(0, route.getDuration() - route.getDurationAdmited()));
-	
-			// update total violation
-			//getCost().calculateTotalCostViol();
+			
 			vehicle_id++;
 
         } 
@@ -259,7 +238,7 @@ public class ChromCustomer extends Chromosome {
 	    // add waiting time if any
 	    waitingT = Math.max(0, customerK.getStartTw() - totalTime);
 	    totWaitingT += waitingT;
-	    //getCost().addWaitingTime(waitingT);
+
 	    // update customer timings information
 	    customerK.setWaitingTime(waitingT);
 
@@ -267,7 +246,7 @@ public class ChromCustomer extends Chromosome {
 
 	    // add time window violation if any
 	    twViol = Math.max(0, totalTime - customerK.getEndTw());
-	    //getCost().addTWViol(twViol);
+
 	    customerK.setTwViol(twViol);
 	    totTwViol += twViol;
 	    // add service time to the chromosome
@@ -275,32 +254,12 @@ public class ChromCustomer extends Chromosome {
 	    // add the service time to the total
 	    totalTime += serviceT;
 	    // add service time to the chromosome
-	    //getCost().addServiceTime(customerK.getServiceDuration());
-	    // add capacity to the chromosome
-	    	
-//	    if (k == iter-1){
-//	    	// the last vehicle goes back to the depot
-//	    	getCost().travelTime += getInstance().getTravelTime(customerK.getNumber(), getDepotNum());
-//	    	totalTime += getCost().getTravelTime();
-//			// add the depot time window violation if any
-//			twViol = Math.max(0, totalTime - getDepot().getEndTw());
-//			getCost().addTWViol(twViol);
-//			// update cost with timings of the depot
-//			getCost().setDepotTwViol(twViol);
-//			getCost().setReturnToDepotTime(totalTime);
-//			getCost().setLoadViol(Math.max(0, getCost().load - route.getLoadAdmited()));
-//			getCost().setDurationViol(Math.max(0, route.getDuration() - route.getDurationAdmited()));
-//	
-//			// update total violation
-//			// Angelo -> to me this is useless
-//			//getCost().calculateTotalCostViol();
-//	    }
 	 }
 
 	cost.setTravelTime(travelT);
 	cost.setServiceTime(serviceT);
 	cost.setWaitingTime(totWaitingT);
-	//cost.setTotal(totalTime);
+	cost.setTotal(totalTime);
 	cost.setTwViol(totTwViol);
 	cost.setLoadViol(loadV);
     }
