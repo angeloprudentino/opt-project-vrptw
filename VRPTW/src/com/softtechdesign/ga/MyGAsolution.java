@@ -106,6 +106,10 @@ public class MyGAsolution {
 			// ArrayList
 			tempCust.add(GACustArray[i]);
 		}
+		
+		//add the last list to the matrix, in the last row.
+		routes[0][k].setCustomers(tempCust);
+		
 		// Write the routes in the TSsolution
 		TSsol.setRoutes(routes);
 		// Return the TSsolution
