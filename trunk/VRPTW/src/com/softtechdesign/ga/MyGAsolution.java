@@ -28,7 +28,6 @@ public class MyGAsolution {
 	// 4- toString();
 	// 5- format conversion from GAsolution to TSsolution
 	//
-	// if any other method could be useful, add it.
 
 	private Instance instance;
 	private ChromCustomer solution; // the actual solution is a chromosome

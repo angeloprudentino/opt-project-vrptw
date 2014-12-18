@@ -23,8 +23,9 @@ public class ChromCustomer extends Chromosome {
 
     /** array of genes which comprise this Chromosome */
     private Customer[] genes;
+    private int genes_dim;
     private Depot[] depots; 		     //some customers are actually depots
-    private int depot_num;
+    private int depot_id;
     
     private Instance instance;           // Reference to the instance of the problem 
     private Cost cost;			         // Cost of the entire chromosome
@@ -38,6 +39,7 @@ public class ChromCustomer extends Chromosome {
     protected ChromCustomer(int iGenesDim, Instance instance)
     {
         this.genes = new Customer[iGenesDim];
+        this.genes_dim = iGenesDim;
         for(int i=0; i<iGenesDim; i++)
         	genes[i] = new Customer();
         this.instance = instance;
@@ -46,7 +48,7 @@ public class ChromCustomer extends Chromosome {
         this.vehicle_load_viol = new double[nv];
         for(int i=0; i<nv; i++)
         	vehicle_load_viol[i] = -instance.getVehicleCapacity();
-        this.depot_num = instance.getCustomersNr();
+        this.depot_id = instance.getCustomersNr();
         buildDepots();
     }
     
@@ -55,9 +57,9 @@ public class ChromCustomer extends Chromosome {
      * considered in the instance of problem
      */
     private void buildDepots() {
-    int n = instance.getDepotsNr();	
-	depots = new Depot[n];
-	for(int i=0; i<n; i++)
+    int depot_num = instance.getDepotsNr();	
+	depots = new Depot[depot_num];
+	for(int i=0; i<depot_num; i++)
 	    depots[i] = instance.getDepot(i);
     }
     
@@ -123,7 +125,7 @@ public class ChromCustomer extends Chromosome {
         int numGenesInCommon = 0;
         ChromCustomer chromR = (ChromCustomer)chromosome;
 
-        for (int i = 0; i < getGenes().length; i++)
+        for (int i = 0; i < genes_dim; i++)
         {
             if (this.getGenes()[i].equals(chromR.getGenes()[i]))
                 numGenesInCommon++;
@@ -179,7 +181,7 @@ public class ChromCustomer extends Chromosome {
         int iGene;
         ChromCustomer chromC = (ChromCustomer)chromosome;
 
-        for (iGene = 0; iGene < getGenes().length; iGene++)
+        for (iGene = 0; iGene < genes_dim; iGene++)
             this.getGenes()[iGene] = chromC.getGenes()[iGene];
         
         updateChromCost(chromC);
@@ -206,15 +208,15 @@ public class ChromCustomer extends Chromosome {
 	    // get the preceding customer
 	    customerK_1 = chromosome.getGene(k-1);
 	    	    
-    	if (customerK.getNumber() != depot_num) { 
+    	if (customerK.getNumber() != depot_id) { 
     	    
     		travelT += getInstance().getTravelTime(customerK_1.getNumber(), customerK.getNumber());
     		totalTime += travelT;
     		UpdateLoadViol(vehicle_id, customerK.getCapacity());
         } 
     	
-        if((customerK.getNumber() == depot_num) || (k == iter-1)){ 
-        	// (customerK.getNumber() == depot_num) -> this is the end of a single route for a vehicle
+        if((customerK.getNumber() == depot_id) || (k == iter-1)){ 
+        	// (customerK.getNumber() == depot_id) -> this is the end of a single route for a vehicle
         	// (k == iter-1) -> the last vehicle goes back to the depot
         	
         	if(k == iter-1){
@@ -269,7 +271,7 @@ public class ChromCustomer extends Chromosome {
 	}
 
 	protected int getPosition(Customer gene) {
-		for (int i = 0; i < getGenes().length; i++) {
+		for (int i = 0; i < genes_dim; i++) {
 			if (getGenes()[i].equals(gene) == true)
 				return i;
 		}
@@ -277,8 +279,8 @@ public class ChromCustomer extends Chromosome {
 	}
 	
 	public int getPositionNumber(Customer gene) {
-		int len = genes.length;
-		for(int i = 0; i < len; i++){
+		
+		for(int i = 0; i < genes_dim; i++){
 			if(genes[i].getNumber() == gene.getNumber()) 
 				return i;
 		}

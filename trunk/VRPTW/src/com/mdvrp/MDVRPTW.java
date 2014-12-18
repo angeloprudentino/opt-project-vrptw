@@ -15,8 +15,8 @@ import com.softtechdesign.ga.MyGAsolution;
 
 public class MDVRPTW {
 
-	private static String class_name = MDVRPTW.class.getName();
-	private static MyLogger MyLog = new MyLogger(class_name);
+//	private static String class_name = MDVRPTW.class.getName();
+//	private static MyLogger MyLog = new MyLogger(class_name);
 
 	public static void main(String[] args) {
 
@@ -38,79 +38,79 @@ public class MDVRPTW {
 
 		try {
 
-			startLog();
+//			startLog();
 			// check to see if an input file was specified
 			parameters.updateParameters(args);
-			MyLog.info(class_name, "main", "parameters.updateParameters(args) => parameters set");
+//			MyLog.info(class_name, "main", "parameters.updateParameters(args) => parameters set");
 
 			if (parameters.getInputFileName() == null) {
-				MyLog.err(class_name, "main", "parameters.getInputFileName() = null => You must specify an input file name");
-				System.err.println("You must specify an input file name [-if file]");
+//				MyLog.err(class_name, "main", "parameters.getInputFileName() = null => You must specify an input file name");
+				if(!parameters.isHelp())
+				   System.err.println("You must specify an input file name [-if file]");
 				return;
 			}
 
 			duration.start();
-			MyLog.info(class_name, "main", "time counting started");
+//			MyLog.info(class_name, "main", "time counting started");
 
 			// get the instance from the file
 			instance = new Instance(parameters);
-			MyLog.info(class_name, "main", "new Instance(parameters) => instance created successfully");
+//			MyLog.info(class_name, "main", "new Instance(parameters) => instance created successfully");
 
 			instance.populateFromHombergFile(parameters.getInputFileName());
-			MyLog.info(class_name, "main", "instance.populateFromHombergFile(parameters.getInputFileName()) => instnce populated from file " + parameters.getInputFileName());
-			MyLog.info(class_name, "main", parameters.toString());
+//			MyLog.info(class_name, "main", "instance.populateFromHombergFile(parameters.getInputFileName()) => instnce populated from file " + parameters.getInputFileName());
+//			MyLog.info(class_name, "main", parameters.toString());
 
 			if (parameters.isGATS()){
 				// Init memory for Genetic Algorithm
-				MyLog.info(class_name, "main", "creating required GA data structure");
+//				MyLog.info(class_name, "main", "creating required GA data structure");
 				GAsearch = new GARoute(parameters, instance);
-				MyLog.info(class_name, "main", "new GARoute(parameters, instance) => GA search program created");			
+//				MyLog.info(class_name, "main", "new GARoute(parameters, instance) => GA search program created");			
 				
-				MyLog.info(class_name, "main", "GAThread.start(); => START");
+//				MyLog.info(class_name, "main", "GAThread.start(); => START");
 				GAsearch.evolve();				 
 				
-				MyLog.info(class_name, "main", "GAThread; => STOP"); 
+//				MyLog.info(class_name, "main", "GAThread; => STOP"); 
 				best_GA_sol = GAsearch.getBestSol();
 				initial_TS_sol = best_GA_sol.ConvertGATS();
 			}			 
 			else{
 				// Init memory for Tabu Search
-				MyLog.info(class_name, "main", "creating required TS data structure");
+//				MyLog.info(class_name, "main", "creating required TS data structure");
 				initial_TS_sol = new MyTSsolution(instance, true);
-				MyLog.info(class_name, "main", "new MyTSsolution(instance) => initial solution instance created\n" + initial_TS_sol.toString());
+//				MyLog.info(class_name, "main", "new MyTSsolution(instance) => initial solution instance created\n" + initial_TS_sol.toString());
 			}
 
 			objFunc = new MyObjectiveFunction(instance);
-			MyLog.info(class_name, "main", "new MyObjectiveFunction(instance) => objective function instance created and initialized with MyInitilaSolution");
+//			MyLog.info(class_name, "main", "new MyObjectiveFunction(instance) => objective function instance created and initialized with MyInitilaSolution");
 
 			moveManager = new MyMoveManager(instance);
-			MyLog.info(class_name, "main",
-					"new MyMoveManager(instance) => move manager instance created");
+//			MyLog.info(class_name, "main", "new MyMoveManager(instance) => move manager instance created");
 
 			moveManager.setMovesType(parameters.getMovesType());
-			MyLog.info(class_name, "main",
-					"moveManager.setMovesType(parameters.getMovesType()) => move type set to "
-							+ parameters.getMovesType());
+//			MyLog.info(class_name, "main",
+//					"moveManager.setMovesType(parameters.getMovesType()) => move type set to "
+//							+ parameters.getMovesType());
 
 			// Tabu list
 			int dimension[] = {instance.getDepotsNr(), instance.getVehiclesNr(), instance.getCustomersNr(), 1, 1 };
-			MyLog.info(class_name, "main", "number of Depots: " + instance.getDepotsNr());
-			MyLog.info(class_name, "main", "number of Vehicles: " + instance.getVehiclesNr());
-			MyLog.info(class_name, "main", "number of Customers: " + instance.getCustomersNr());
+//			MyLog.info(class_name, "main", "number of Depots: " + instance.getDepotsNr());
+//			MyLog.info(class_name, "main", "number of Vehicles: " + instance.getVehiclesNr());
+//			MyLog.info(class_name, "main", "number of Customers: " + instance.getCustomersNr());
 
 			tabuList = new MyTabuList(parameters.getTabuTenure(), dimension);
-			MyLog.info(class_name, "main", "new MyTabuList(parameters.getTabuTenure(), dimension) =>  Tabu List created");
+//			MyLog.info(class_name, "main", "new MyTabuList(parameters.getTabuTenure(), dimension) =>  Tabu List created");
 
 			// Create Tabu Search object
 			TSsearch = new MySearchProgram(instance, initial_TS_sol, moveManager, objFunc, tabuList, false, outPrintSream);
-			MyLog.info(class_name, "main", "new MySearchProgram(instance, initialSol, moveManager, objFunc, tabuList, false, outPrintSream) => TS search program created");
+//			MyLog.info(class_name, "main", "new MySearchProgram(instance, initialSol, moveManager, objFunc, tabuList, false, outPrintSream) => TS search program created");
 
 			// Start solving
 			TSsearch.getTabuSearch().setIterationsToGo(parameters.getIterations());
-			MyLog.info( class_name, "main", "search.tabuSearch.setIterationsToGo(parameters.getIterations()) => number of iterations = " + parameters.getIterations());
+//			MyLog.info( class_name, "main", "search.tabuSearch.setIterationsToGo(parameters.getIterations()) => number of iterations = " + parameters.getIterations());
 
 			TSsearch.getTabuSearch().startSolving();
-			MyLog.info(class_name, "main", "search.tabuSearch.startSolving(); => START");
+//			MyLog.info(class_name, "main", "search.tabuSearch.startSolving(); => START");
 
 			// wait for the search thread to finish
 			try {
@@ -120,14 +120,14 @@ public class MDVRPTW {
 				}
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
-				MyLog.err(class_name, "main", e1.getMessage());
+//				MyLog.err(class_name, "main", e1.getMessage());
 			}
 
 			duration.stop();
-			MyLog.info(class_name, "main", "time counting stopped");
-			MyLog.info(class_name, "main", "total execution time = " + duration.toString());
+//			MyLog.info(class_name, "main", "time counting stopped");
+//			MyLog.info(class_name, "main", "total execution time = " + duration.toString());
 
-			MyLog.info(class_name, "main", "final solution = \n" + ((MyTSsolution)TSsearch.getTabuSearch().getBestSolution()).toString());
+//			MyLog.info(class_name, "main", "final solution = \n" + ((MyTSsolution)TSsearch.getTabuSearch().getBestSolution()).toString());
 			// Count routes
 			int routesNr = 0;
 			for (int i = 0; i < TSsearch.feasibleRoutes.length; ++i)
@@ -147,36 +147,36 @@ public class MDVRPTW {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			MyLog.err(class_name, "main", e.getMessage());
+//			MyLog.err(class_name, "main", e.getMessage());
 		}
 
-		stopLog();
+//		stopLog();
 	}
 
-	private static void startLog() {
+//	private static void startLog() {
+//
+//		String s = "\n"
+//				+ "*********************************************************\n"
+//				+ "*********************************************************\n"
+//				+ "**                                                     **\n"
+//				+ "**                VRPTW Execution Start                **\n"
+//				+ "**                                                     **\n"
+//				+ "*********************************************************\n"
+//				+ "*********************************************************\n";
+//		MyLog.info(class_name, "main", s);
+//
+//	}
 
-		String s = "\n"
-				+ "*********************************************************\n"
-				+ "*********************************************************\n"
-				+ "**                                                     **\n"
-				+ "**                VRPTW Execution Start                **\n"
-				+ "**                                                     **\n"
-				+ "*********************************************************\n"
-				+ "*********************************************************\n";
-		MyLog.info(class_name, "main", s);
-
-	}
-
-	private static void stopLog() {
-
-		String s = "\n"
-				+ "*********************************************************\n"
-				+ "*********************************************************\n"
-				+ "**                                                     **\n"
-				+ "**                 VRPTW Execution End                 **\n"
-				+ "**                                                     **\n"
-				+ "*********************************************************\n"
-				+ "*********************************************************\n";
-		MyLog.info(class_name, "main", s);
-	}
+//	private static void stopLog() {
+//
+//		String s = "\n"
+//				+ "*********************************************************\n"
+//				+ "*********************************************************\n"
+//				+ "**                                                     **\n"
+//				+ "**                 VRPTW Execution End                 **\n"
+//				+ "**                                                     **\n"
+//				+ "*********************************************************\n"
+//				+ "*********************************************************\n";
+//		MyLog.info(class_name, "main", s);
+//	}
 }

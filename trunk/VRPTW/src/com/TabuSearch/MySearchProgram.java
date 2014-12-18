@@ -20,9 +20,6 @@ import com.mdvrp.Route;
 @SuppressWarnings("serial")
 public class MySearchProgram implements TabuSearchListener{
 	
-	//private static String class_name = MySearchProgram.class.getName();
-	//private static MyLogger MyLog = new MyLogger(class_name);
-
 	private static int iterationsDone;
 	private TabuSearch tabuSearch;
 	private MyTSsolution sol;
@@ -63,8 +60,6 @@ public class MySearchProgram implements TabuSearchListener{
 		bestCost 	= getCostFromObjective(sol.getObjectiveValue());
 		bestRoutes 	= cloneRoutes(sol.getRoutes());
 		bestIndex 	= tabuSearch.getIterationsCompleted() + 1; // plus the current one
-		//MyLog.info(class_name, "newBestSolutionFound", "new best solution founded at iteration " + iterationsDone);
-		//MyLog.info(class_name, "newBestSolutionFound", "new best solution cost:\n" + bestCost.toString());
 	}
 
 	/**
@@ -124,8 +119,6 @@ public class MySearchProgram implements TabuSearchListener{
 			sol.setRoutes(feasibleRoutes);
 			sol.setFeasibleIndex(feasibleIndex);
 			tabuSearch.setBestSolution(sol);
-			//MyLog.warning(class_name, "tabuSearchStopped", "final solution");
-			//MyLog.info(class_name, "tabuSearchStopped", sol.toString());
 		}
 		
 		// wake up the main thread

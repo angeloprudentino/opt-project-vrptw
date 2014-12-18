@@ -11,7 +11,8 @@ public class Parameters {
 	// general parameters
 	private String inputFileName;
 	private String outputFileName;
-	private String mode;  
+	private String mode;
+	private boolean help;
 	
 	// TS specific parameters
 	private MovesType movesType;
@@ -29,14 +30,11 @@ public class Parameters {
 	private double crossoverProb;
 	private int randomSelectionChance;
 	private int maxGenerations;
-	private int numPrelimRuns;
-	private int maxPrelimGenerations;
 	private double mutationProb;
 	private int crossoverType;
 	private boolean computeStatistics;
     private double greedyRatio;    //ratio of greedy initial population (1 = all greedy, 0 = all random)
 	
-	MyLogger MyLog = new MyLogger(Parameters.class.getName());
 
 	
 	public Parameters() {
@@ -45,6 +43,7 @@ public class Parameters {
 		mode					= GATS;
 		currDir 				= System.getProperty("user.dir");
 		outputFileName    		= currDir + "/output/solutions.csv";
+		help 					= false;
 		
 		// TS specific parameters
 		movesType         		= MovesType.SWAP;
@@ -62,11 +61,9 @@ public class Parameters {
 		crossoverType 			= Crossover.ctTwoPoint;
 		randomSelectionChance 	= 10;
 		maxGenerations 			= 4000;
-		numPrelimRuns 			= 0;
-		maxPrelimGenerations	= 500;
 		mutationProb 			= 0.06;
 		computeStatistics 		= true;
-		greedyRatio 			= 0;
+		greedyRatio 			= 0.2;
 				
 		
 	}
@@ -83,7 +80,6 @@ public class Parameters {
 							setMode(m);
 						else{
 							String msg = "Execution mode argument must be \"gats\" or \"ts\". Set to default \"gats\"!";
-							MyLog.warning(Parameters.class.getName(), "updateParameters(String[] args)", msg);
 							throw new Exception(msg);
 						}
 						break;
@@ -116,7 +112,6 @@ public class Parameters {
 							setVariableTenure(false);
 						}else {
 							String msg = "Variable tenure argument must be true of false. Set to default false!";
-							MyLog.warning(Parameters.class.getName(), "updateParameters(String[] args)", msg);
 							throw new Exception(msg);
 						}
 						break;
@@ -133,12 +128,6 @@ public class Parameters {
 					case "-mg":
 						maxGenerations = Integer.parseInt(args[i+1]);
 						break;
-					case "-npr":
-						numPrelimRuns = Integer.parseInt(args[i+1]);
-					    break;
-					case "-mpg":
-						maxPrelimGenerations = Integer.parseInt(args[i+1]);
-						break;
 					case "-mp":
 						mutationProb = Double.parseDouble(args[i+1]);
 						break;
@@ -149,25 +138,31 @@ public class Parameters {
 							setComputeStatistics(false);
 						}else {
 							String msg = "Compute Statistics argument must be true of false. Set to default true!";
-							MyLog.warning(Parameters.class.getName(), "updateParameters(String[] args)", msg);
 							throw new Exception(msg);
 						}
 						break;
 					case "-gr":
 						greedyRatio = Double.parseDouble(args[i+1]);
 						break;
+					case "-h":
+						printHelp();
+						help = true;
+						break;
 					
 					default: {
 						String msg = "Unknown type of argument: " + args[i];
-						MyLog.err(Parameters.class.getName(), "updateParameters(String[] args)", msg);
 						throw new Exception(msg);
 					}
 				}
 			}
 		}else {
-			MyLog.err(Parameters.class.getName(), "updateParameters(String[] args)", "Parameters are not in correct format");
 			printHelp();
-			throw new Exception();
+			
+			if (args[0].compareTo("-h") == 0){
+				help = true;
+			}
+			else
+				throw new Exception();
 		}
 	}
 	
@@ -192,8 +187,6 @@ public class Parameters {
 		print.append("\n" + "| Crossover Type: " + crossoverType);
 		print.append("\n" + "| Random Selection Chance: " + randomSelectionChance);
 		print.append("\n" + "| Max Generations: " + maxGenerations);
-		print.append("\n" + "| Num Preliminary Runs: " + numPrelimRuns);
-		print.append("\n" + "| Max Preliminary Generations: " + maxPrelimGenerations);
 		print.append("\n" + "| Mutation Probability = " + mutationProb);
 		print.append("\n" + "| Greedy Ratio = " + greedyRatio);
 		print.append("\n" + "------------------------------------------------------");
@@ -201,7 +194,29 @@ public class Parameters {
 	}
 
 	void printHelp(){
-		//TODO print the list of accepted parameters
+
+		StringBuffer buff = new StringBuffer("");
+		
+		buff.append("------------ Admitted parameters ------------------\n");
+		buff.append("\n");
+		buff.append("******************* Mandatory *********************\n");
+		buff.append("* -if input_file                                  *\n");
+		buff.append("***************************************************\n");
+		buff.append("\n");
+		buff.append("                    Optional\n");
+		buff.append("-of output_file\n");
+		buff.append("-m mode [gats | onlyts]\n");
+		buff.append("-it TS_iterations\n");
+		buff.append("-vt variable_tenure [true | false]\n");
+		buff.append("-t tabu_tenure\n");
+		buff.append("-pd population_dim\n");
+		buff.append("-cp crossover_prob\n");
+		buff.append("-rsc random_selection_chance\n");
+		buff.append("-mg max_generations\n");
+//		buff.append("-mp mutation_prob\n");
+		buff.append("-gr greedy_ratio\n");
+		
+		System.out.println(buff.toString());
 	}
 	/**
 	 * @return the movesType
@@ -367,22 +382,6 @@ public class Parameters {
 		this.maxGenerations = maxGenerations;
 	}
 
-	public int getNumPrelimRuns() {
-		return numPrelimRuns;
-	}
-
-	public void setNumPrelimRuns(int numPrelimRuns) {
-		this.numPrelimRuns = numPrelimRuns;
-	}
-
-	public int getMaxPrelimGenerations() {
-		return maxPrelimGenerations;
-	}
-
-	public void setMaxPrelimGenerations(int maxPrelimGenerations) {
-		this.maxPrelimGenerations = maxPrelimGenerations;
-	}
-
 	public double getMutationProb() {
 		return mutationProb;
 	}
@@ -425,4 +424,9 @@ public class Parameters {
 		else 
 			return false;
 	}
+
+	public boolean isHelp() {
+		return help;
+	}
+	
 }
