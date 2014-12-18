@@ -25,9 +25,6 @@ public class GARoute extends GA{
 	private static String class_name = GARoute.class.getName();
 	private static MyLogger MyLog = new MyLogger(class_name);
 
-//    private double alpha;
-//    private double beta;
-//    private double gamma;
 	private static final double LOAD_RATIO = 0.10; //used in initPopualtion
 	
 	/*
@@ -45,7 +42,7 @@ public class GARoute extends GA{
 	            super(p.getChromosomeDim(),
 			          p.getPopulationDim(), 
 					  p.getCrossoverProb(), 
-					  p.getRandomSelectionChance(), 
+					  p.getRandomSelectionChance(),
 					  p.getMaxGenerations(), 
 					  p.getNumPrelimRuns(),
 					  p.getMaxPrelimGenerations(), 
@@ -153,7 +150,8 @@ public class GARoute extends GA{
         	
         	//if it's a feasible solution then build the chromosome from ProtoChromosome
         	if (notAssigned == 0){
-        		this.chromosomes[chrom] = temp.toChromosome();
+        		Chromosome chromo = temp.toChromosome();
+        		this.chromosomes[chrom].copyChromGenes(chromo);
             	this.chromosomes[chrom].fitness = getFitness(chrom);
         		//System.out.println("Finished chromosome " + chrom);
         	}
@@ -293,24 +291,7 @@ public class GARoute extends GA{
 			}
 		}
 		return count;
-	}
-    
-//    private static int encriptDepotCode(ChromCustomer parentChromosome, int depotNumber, int popDimension) {
-//		int count=0;
-//		boolean first=true;
-//		for(int i=0; i<parentChromosome.length(); i++){
-//			if(parentChromosome.getGene(i).getNumber() == depotNumber){
-//				if(first){first=false;}
-//				else{
-//					parentChromosome.getGene(i).setNumber(popDimension + count);
-//					count++;
-//				}
-//			}
-//		}
-//		return count;
-//	}
-    
-    
+	}    
 	
 	private int decriptDepotCode(ChromCustomer childChromosome, int depotNumber) {
 		int count=0;
@@ -353,10 +334,6 @@ public class GARoute extends GA{
         protected double getFitness(int iChromIndex) {
     	
     	ChromCustomer chrom = (ChromCustomer) chromosomes[iChromIndex];
-    	//updateParameters();
-    	//chrom.getCost().calculateTotal(alpha, beta, gamma);
-    	//chrom.getCost().calculateTotalCostViol();
-    	//double total = chrom.getCost().getTotal();
     	
     	Cost c = chrom.getCost();
     	// i consider all kind of violations in the same way
@@ -373,14 +350,4 @@ public class GARoute extends GA{
 			return best_feasible_sol;
 		}
 		
-//		private void updateParameters(){
-//			alpha = instance.getRandom().nextDouble();
-//			beta = instance.getRandom().nextDouble();
-//			gamma = instance.getRandom().nextDouble();
-//		}
-		
-		public void startSolving(){
-			super.evolve();
-		}
-
 }
