@@ -11,7 +11,6 @@ import com.TabuSearch.MyTSsolution;
 import com.mdvrp.Cost;
 import com.mdvrp.Customer;
 import com.mdvrp.Instance;
-import com.mdvrp.MyLogger;
 import com.mdvrp.Parameters;
 
 
@@ -22,8 +21,8 @@ import com.mdvrp.Parameters;
  */
 public class GARoute extends GA{
 	
-	private static String class_name = GARoute.class.getName();
-	private static MyLogger MyLog = new MyLogger(class_name);
+//	private static String class_name = GARoute.class.getName();
+//	private static MyLogger MyLog = new MyLogger(class_name);
 
 	private static final double LOAD_RATIO = 0.10; //used in initPopualtion
 	
@@ -44,8 +43,6 @@ public class GARoute extends GA{
 					  p.getCrossoverProb(), 
 					  p.getRandomSelectionChance(),
 					  p.getMaxGenerations(), 
-					  p.getNumPrelimRuns(),
-					  p.getMaxPrelimGenerations(), 
 					  p.getMutationProb(), 
 					  p.getCrossoverType(), 
 					  p.isComputeStatistics(),
@@ -266,7 +263,7 @@ public class GARoute extends GA{
 				if(decriptedDepotChild2 != encriptedDepotParent2) throw new GAException("translation error 2");
     			
     		}catch(GAException e){
-    			MyLog.err(class_name, "doTwoPtCrossover(Chromosome Chrom1, Chromosome Chrom2)", e.getMessage());
+//    			MyLog.err(class_name, "doTwoPtCrossover(Chromosome Chrom1, Chromosome Chrom2)", e.getMessage());
     			e.printStackTrace();
     		}
     	
@@ -295,7 +292,8 @@ public class GARoute extends GA{
 	
 	private int decriptDepotCode(ChromCustomer childChromosome, int depotNumber) {
 		int count=0;
-		for(int i=0; i<childChromosome.length(); i++){
+		int iter = childChromosome.length();
+		for(int i=0; i<iter; i++){
 			if(childChromosome.getGene(i).getNumber() > depotNumber){
 				//childChromosome.getGene(i).setNumber(depotNumber);
 				childChromosome.setGene(childChromosome.getGene(0), i);
@@ -307,12 +305,10 @@ public class GARoute extends GA{
     
 	private int applyPmxRule (int i, boolean[] booleanArray, ChromCustomer parentA, ChromCustomer parentB) throws GAException{
 		int pos = i;
-		int iterations = 0;
 		int number = parentA.getGene(pos).getNumber();
-		while(booleanArray[number] == true && iterations < chromosomeDim){
+		while(booleanArray[number] == true){
 			pos = parentB.getPositionNumber(parentA.getGene(pos));
 			number = parentA.getGene(pos).getNumber();
-			iterations++;
 		}
 		if(pos < 0) 
 			throw new GAException("Crossover error"); 
@@ -339,7 +335,7 @@ public class GARoute extends GA{
     	// i consider all kind of violations in the same way
     	double gen_viol = c.getDepotTwViol() + c.getDurationViol() + c.getLoadViol() + c.getTwViol(); 
     	double travel = c.getTravel();
-    	return 1/travel + 1/gen_viol;
+    	return 1/(travel + gen_viol);
         }
 
 		/**

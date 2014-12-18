@@ -16,9 +16,6 @@ import com.softtechdesign.ga.MyGAsolution;
 @SuppressWarnings("serial")
 public class MyTSsolution extends SolutionAdapter{
 	
-	//private static String class_name = MyTSsolution.class.getName();
-	//private static MyLogger MyLog = new MyLogger(class_name);
-
 	private static Instance instance;
 	private static int iterationsDone;
 	private Route[][] routes; // stores the routes to be modified on
@@ -41,13 +38,9 @@ public class MyTSsolution extends SolutionAdapter{
 		MyTSsolution.setInstance(instance);
 		cost = new Cost();
 		initializeRoutes(instance);
-//		MyLog.warning(class_name, "constructor", "initializeRoutes(instance)");
-//		MyLog.info(class_name, "constructor", toString());
 		
 		if (build_routes) {
 			buildInitialRoutes1(instance);
-//			MyLog.warning(class_name, "constructor", "buildInitialRoutes1(instance)");
-//			MyLog.info(class_name, "constructor", toString());
 		}
 		
 		// used for input routes from file
@@ -549,7 +542,8 @@ public class MyTSsolution extends SolutionAdapter{
 		k++;
 
 		// Populate the customer array
-		for (i = 0; i < instance.getVehiclesNr(); i++) {
+		int iter = instance.getVehiclesNr();
+		for (i = 0; i < iter; i++) {
 			// for every vehicle, get the customer list
 			currV = routes[0][i].getCustomers();
 			// cycle through the customer list

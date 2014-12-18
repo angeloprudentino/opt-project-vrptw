@@ -1,9 +1,6 @@
 package com.softtechdesign.ga;
-import java.util.Date;
-
 import com.mdvrp.Customer;
 import com.mdvrp.Instance;
-import com.mdvrp.MyLogger;
 
 /**
  * <pre>
@@ -36,10 +33,10 @@ import com.mdvrp.MyLogger;
  * </pre>
  * @author Jeff Smith jeff@SoftTechDesign.com
  */
-public abstract class GA implements Runnable
+public abstract class GA 
 {
-	private static String class_name = GA.class.getName();
-	private static MyLogger MyLog = new MyLogger(class_name);
+//	private static String class_name = GA.class.getName();
+//	private static MyLogger MyLog = new MyLogger(class_name);
 	
 	/** instance of the problem;
 	 * used only for GARoute
@@ -52,12 +49,6 @@ public abstract class GA implements Runnable
 
     /** maximum generations to evolve */
     int maxGenerations; 
-
-    /** number of prelim generations to evolve. Set to zero to disable */
-    int numPrelimRuns; 
-
-    /** prelim generations. Prelim runs are useful for building fitter "starting" chromosome stock before the main evolution run. */
-    int maxPrelimGenerations; //maximum prelim generations to evolve
 
     /** 1-100 (e.g. 10 = 10% chance of random selection--not based on fitness). 
      * Setting nonzero randomSelectionChance helps maintain genetic diversity during evolution
@@ -119,14 +110,6 @@ public abstract class GA implements Runnable
     abstract protected double getFitness(int iChromIndex);
 
     /**
-     * Runs the evolution by calling evolve() routine
-     */
- 
-    public void run(){
- 		evolve();
-    }
-
-    /**
      * Initializes the GA using given parameters
      * @param chromosomeDim
      * @param populationDim
@@ -144,8 +127,6 @@ public abstract class GA implements Runnable
               double crossoverProb,
               int randomSelectionChance,
               int maxGenerations,
-              int numPrelimRuns,
-              int maxPrelimGenerations,
               double mutationProb,
               int crossoverType,
               boolean computeStatistics,
@@ -166,8 +147,6 @@ public abstract class GA implements Runnable
 
         this.crossoverProb = crossoverProb;
         this.maxGenerations = maxGenerations;
-        this.numPrelimRuns = numPrelimRuns;
-        this.maxPrelimGenerations = maxPrelimGenerations;
         this.mutationProb = mutationProb;
     }
 
@@ -207,25 +186,6 @@ public abstract class GA implements Runnable
     public int getMaxGenerations()
     {
         return maxGenerations;
-    }
-
-    /**
-     * Gets the number of preliminary runs that will be performed before the main
-     * evolution begins
-     * @return int
-     */
-    public int getNumPrelimRuns()
-    {
-        return numPrelimRuns;
-    }
-
-    /**
-     * Gets the maximum number of preliminary generations to evolve
-     * @return int
-     */
-    public int getMaxPrelimGenerations()
-    {
-        return maxPrelimGenerations;
     }
 
     /**
@@ -336,59 +296,8 @@ public abstract class GA implements Runnable
     public void evolve()
     {
         int iGen;
-        int iPrelimChrom, iPrelimChromToUsePerRun;
 
-        MyLog.info(class_name, "evolve()", "GA start time: " + new Date().toString());
-
-        // Angelo -> 05/12/2014 (i think we don't need preliminary runs      
-        if (numPrelimRuns > 0)
-        {
-            iPrelimChrom = 0;
-            //number of fittest prelim chromosomes to use with final run
-            iPrelimChromToUsePerRun = populationDim / numPrelimRuns;
-
-            for (int iPrelimRuns = 1; iPrelimRuns <= numPrelimRuns; iPrelimRuns++)
-            {
-                iGen = 0;
-                initPopulation();
-
-                //create a somewhat fit chromosome population for this prelim run
-                while (iGen < maxPrelimGenerations)
-                {
-                	MyLog.info(class_name, "evolve()", iPrelimRuns + " of " + numPrelimRuns + " prelim runs --> " + (iGen + 1) + " of " + maxPrelimGenerations + " generations");
-
-                    computeFitnessRankings();
-                    doGeneticMating();
-                    copyNextGenToThisGen();
-
-                    if (computeStatistics == true)
-                    {
-                        this.genAvgDeviation[iGen] = getAvgDeviationAmongChroms();
-                        this.genAvgFitness[iGen] = getAvgFitness();
-                    }
-                    iGen++;
-                }
-
-                computeFitnessRankings();
-
-                //copy these somewhat fit chromosomes to the main chromosome pool
-                int iNumPrelimSaved = 0;
-                for (int i = 0; i < populationDim && iNumPrelimSaved < iPrelimChromToUsePerRun; i++)
-                    if (this.chromosomes[i].fitnessRank >= populationDim - iPrelimChromToUsePerRun)
-                    {
-                        this.prelimChrom[iPrelimChrom + iNumPrelimSaved].copyChromGenes(this.chromosomes[i]);
-                        //store (remember) these fit chroms
-                        iNumPrelimSaved++;
-                    }
-                iPrelimChrom += iNumPrelimSaved;
-            }
-            for (int i = 0; i < iPrelimChrom; i++)
-                this.chromosomes[i].copyChromGenes(this.prelimChrom[i]);
-            //MyLog.info(class_name, "evolve()", "INITIAL POPULATION AFTER PRELIM RUNS:");
-        }
-        else{
-        	//MyLog.info(class_name, "evolve()", "INITIAL POPULATION (NO PRELIM RUNS):");
-        }
+//        MyLog.info(class_name, "evolve()", "GA start time: " + new Date().toString());
         
         //addChromosomesToLog(0, populationDim);
 
@@ -411,7 +320,7 @@ public abstract class GA implements Runnable
             iGen++;
         }
 
-        MyLog.info(class_name, "evolve()", "GEN " + (iGen + 1) + " AVG FITNESS = " + this.genAvgFitness[iGen-1] + " AVG DEV = " + this.genAvgDeviation[iGen-1]);
+//        MyLog.info(class_name, "evolve()", "GEN " + (iGen + 1) + " AVG FITNESS = " + this.genAvgFitness[iGen-1] + " AVG DEV = " + this.genAvgDeviation[iGen-1]);
 
         //addChromosomesToLog(iGen, populationDim); 
 
@@ -419,10 +328,10 @@ public abstract class GA implements Runnable
         
         ChromCustomer chr = (ChromCustomer) this.chromosomes[this.bestFitnessChromIndex];
         best_feasible_sol.UpdateSolution(chr);
-        MyLog.info(class_name, "evolve()", "Best Chromosome Found: ");
-        MyLog.info(class_name, "evolve()", chr.getGenesAsStr() + " Fitness= " + chr.fitness + "\n--------------------------------------------------");
+//        MyLog.info(class_name, "evolve()", "Best Chromosome Found: ");
+//        MyLog.info(class_name, "evolve()", chr.getGenesAsStr() + " Fitness= " + chr.fitness + "\n--------------------------------------------------");
 
-        MyLog.info(class_name, "evolve()", "GA end time: " + new Date().toString());
+//        MyLog.info(class_name, "evolve()", "GA end time: " + new Date().toString());
      }
 
     /**
@@ -584,26 +493,8 @@ public abstract class GA implements Runnable
         this.chromNextGen[iCnt].copyChromGenes(this.chromosomes[this.worstFitnessChromIndex]);
         iCnt++;
 
-        if (this instanceof GARoute)
-        {
-            Chrom1 = new ChromCustomer(chromosomeDim, instance);
-            Chrom2 = new ChromCustomer(chromosomeDim, instance);
-        }
-        else if (this instanceof GAString)
-        {
-            Chrom1 = new ChromChars(chromosomeDim);
-            Chrom2 = new ChromChars(chromosomeDim);
-        }
-        else if (this instanceof GAFloat)
-        {
-            Chrom1 = new ChromFloat(chromosomeDim);
-            Chrom2 = new ChromFloat(chromosomeDim);
-        }
-        else //must be GASeq
-            {
-            Chrom1 = new ChromStrings(chromosomeDim);
-            Chrom2 = new ChromStrings(chromosomeDim);
-        }
+        Chrom1 = new ChromCustomer(chromosomeDim, instance);
+        Chrom2 = new ChromCustomer(chromosomeDim, instance);
 
         do
         {
@@ -693,7 +584,7 @@ public abstract class GA implements Runnable
             buf.append(this.chromosomes[i].getGenesAsStr()).append("fitness = ").append(this.chromosomes[i].fitness);
             buf.append("\n--------------------------------------------------\n");
         }
-        MyLog.info(class_name, "addChromosomesToLog(int iGeneration, int iNumChromosomesToDisplay)", buf.toString());
+//        MyLog.info(class_name, "addChromosomesToLog(int iGeneration, int iNumChromosomesToDisplay)", buf.toString());
     }
 
     /**
@@ -709,47 +600,12 @@ public abstract class GA implements Runnable
         int devCnt = 0;
         for (int iGene = 0; iGene < this.chromosomeDim; iGene++)
         {
-           if (this instanceof GARoute)
-             {
-                Customer bestFitGene = ((ChromCustomer)this.chromosomes[this.bestFitnessChromIndex]).getGene(iGene);
-                for (int i = 0; i < this.populationDim; i++)
-                {
-                	Customer thisGene = ((ChromCustomer)this.chromosomes[i]).getGene(iGene);
-                    if (thisGene != bestFitGene)
-                        devCnt++;
-                }
-            }
-        	else if (this instanceof GAString)
+            Customer bestFitGene = ((ChromCustomer)this.chromosomes[this.bestFitnessChromIndex]).getGene(iGene);
+            for (int i = 0; i < this.populationDim; i++)
             {
-                char bestFitGene = ((ChromChars)this.chromosomes[this.bestFitnessChromIndex]).getGene(iGene);
-                for (int i = 0; i < this.populationDim; i++)
-                {
-                    char thisGene = ((ChromChars)this.chromosomes[i]).getGene(iGene);
-                    if (thisGene != bestFitGene)
-                        devCnt++;
-                }
-            }
-            else if (this instanceof GAFloat)
-            {
-                double bestFitGene =
-                    ((ChromFloat)this.chromosomes[this.bestFitnessChromIndex]).getGene(iGene);
-                for (int i = 0; i < populationDim; i++)
-                {
-                    double thisGene = ((ChromFloat)this.chromosomes[i]).getGene(iGene);
-                    if (thisGene != bestFitGene)
-                        devCnt++;
-                }
-            }
-            else //GAStringsSeq
-                {
-                String bestFitGene =
-                    ((ChromStrings)this.chromosomes[this.bestFitnessChromIndex]).getGene(iGene);
-                for (int i = 0; i < this.populationDim; i++)
-                {
-                    String thisGene = ((ChromStrings)this.chromosomes[i]).getGene(iGene);
-                    if (thisGene.equals(bestFitGene) == false)
-                        devCnt++;
-                }
+            	Customer thisGene = ((ChromCustomer)this.chromosomes[i]).getGene(iGene);
+                if (thisGene != bestFitGene)
+                    devCnt++;
             }
         }
 

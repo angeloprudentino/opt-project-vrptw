@@ -13,8 +13,8 @@ import java.util.Scanner;
  */
 public class Instance {
 	
-	private static String class_name = Instance.class.getName();
-	private static MyLogger MyLog = new MyLogger(class_name);
+//	private static String class_name = Instance.class.getName();
+//	private static MyLogger MyLog = new MyLogger(class_name);
 
 	private int vehiclesNr;
 	private int customersNr;
@@ -114,7 +114,6 @@ public class Instance {
 			
 			depot.setNumber(customersNr);
 			
-			// Angelo 08/12/2014 //TODO
 			parameters.setChromosomeDim(customersNr + vehiclesNr);
 			
 			if(parameters.getTabuTenure() == -1)
@@ -127,7 +126,7 @@ public class Instance {
 		} catch (FileNotFoundException e) {
 			// File not found
 			System.err.println("File not found!");
-			MyLog.err(class_name, "populateFromHombergFile(String filename)", e.getMessage());
+//			MyLog.err(class_name, "populateFromHombergFile(String filename)", e.getMessage());
 			System.exit(-1);
 		}
 	}
