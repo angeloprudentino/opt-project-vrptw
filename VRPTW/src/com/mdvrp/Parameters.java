@@ -59,7 +59,7 @@ public class Parameters {
 		populationDim 			= 50; 
 		crossoverProb 			= 0.7;
 		crossoverType 			= Crossover.ctTwoPoint;
-		randomSelectionChance 	= 10;
+		randomSelectionChance 	= 30;
 		maxGenerations 			= 4000;
 		mutationProb 			= 0.06;
 		computeStatistics 		= true;
@@ -79,7 +79,7 @@ public class Parameters {
 						if (m.compareTo(GATS)==0 || m.compareTo(TS)==0)
 							setMode(m);
 						else{
-							String msg = "Execution mode argument must be \"gats\" or \"ts\". Set to default \"gats\"!";
+							String msg = "Execution mode argument must be \"gats\" or \"onlyts\". Set to default \"gats\"!";
 							throw new Exception(msg);
 						}
 						break;

@@ -11,6 +11,7 @@ import com.TabuSearch.MyTSsolution;
 import com.mdvrp.Cost;
 import com.mdvrp.Customer;
 import com.mdvrp.Instance;
+import com.mdvrp.MyLogger;
 import com.mdvrp.Parameters;
 
 
@@ -21,8 +22,8 @@ import com.mdvrp.Parameters;
  */
 public class GARoute extends GA{
 	
-//	private static String class_name = GARoute.class.getName();
-//	private static MyLogger MyLog = new MyLogger(class_name);
+	private static String class_name = GARoute.class.getName();
+	private static MyLogger MyLog = new MyLogger(class_name);
 
 	private static final double LOAD_RATIO = 0.10; //used in initPopualtion
 	
@@ -64,6 +65,11 @@ public class GARoute extends GA{
         }
 
         initPopulation();
+        ChromCustomer chr = (ChromCustomer) this.chromosomes[this.bestFitnessChromIndex];
+        best_feasible_sol.UpdateSolution(chr);
+        MyLog.info(class_name, "constructor", "Best Initial Chromosome: ");
+        MyLog.info(class_name, "constructor", chr.getGenesAsStr() + " Fitness= " + chr.fitness + "\n--------------------------------------------------");
+
     }
 
     /**
@@ -88,7 +94,8 @@ public class GARoute extends GA{
     		instance.getParameters().setStartClient(-1);	//we want the startClient to be picked randomly each time
     		MyTSsolution tsSol = new MyTSsolution(instance, true); //create the greedy solution
     		MyGAsolution gaSol = tsSol.ConvertTSGA();
-    		this.chromosomes[chrom] = gaSol.getSolution();
+    		ChromCustomer chromo = gaSol.getSolution();
+    		this.chromosomes[chrom].copyChromGenes(chromo);
         	this.chromosomes[chrom].fitness = getFitness(chrom);
     	}
     	

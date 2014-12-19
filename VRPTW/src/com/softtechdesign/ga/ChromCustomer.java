@@ -184,19 +184,26 @@ public class ChromCustomer extends Chromosome {
         for (iGene = 0; iGene < genes_dim; iGene++)
             this.getGenes()[iGene] = chromC.getGenes()[iGene];
         
-        updateChromCost(chromC);
+        updateChromCost(this);
     }
     
     private void updateChromCost(ChromCustomer chromosome){
 	
-	double loadV = 0;
-	double twViol = 0;
-	double totTwViol = 0;
-	double waitingT = 0;
-	double totWaitingT = 0;
-	double travelT = 0;
-	double totalTime = 0;
-	double serviceT = 0;
+   	double customerWaitingT = 0;
+
+    double vehicleTravelT = 0;
+	double vehicleTwViol = 0;
+	double vehicleWaitingT = 0;
+	double vehicleServiceT = 0;
+	double vehicleTotalT = 0;
+
+	double totalTravelT = 0;
+	double totalLoadViol = 0;
+	double totalTwViol = 0;
+	double totalWaitingT = 0;
+	double totalServiceT = 0;
+	double totalT = 0;
+
 	
 	Customer customerK, customerK_1;
 	int iter = chromosome.length();
@@ -210,8 +217,8 @@ public class ChromCustomer extends Chromosome {
 	    	    
     	if (customerK.getNumber() != depot_id) { 
     	    
-    		travelT += getInstance().getTravelTime(customerK_1.getNumber(), customerK.getNumber());
-    		totalTime += travelT;
+    		vehicleTravelT += getInstance().getTravelTime(customerK_1.getNumber(), customerK.getNumber());
+    		vehicleTotalT += vehicleTravelT;
     		UpdateLoadViol(vehicle_id, customerK.getCapacity());
         } 
     	
@@ -220,50 +227,63 @@ public class ChromCustomer extends Chromosome {
         	// (k == iter-1) -> the last vehicle goes back to the depot
         	
         	if(k == iter-1){
-        		travelT += getInstance().getTravelTime(customerK.getNumber(), getDepotNum());
-        		totalTime += travelT;
+        		vehicleTravelT += getInstance().getTravelTime(customerK.getNumber(), getDepotNum());
+        		vehicleTotalT += vehicleTravelT;
         	}
         	else{
-        		travelT += getInstance().getTravelTime(customerK_1.getNumber(), getDepotNum());
-        		totalTime += travelT;
+        		vehicleTravelT += getInstance().getTravelTime(customerK_1.getNumber(), getDepotNum());
+        		vehicleTotalT += vehicleTravelT;
         	}
         	
 			// add the depot time window violation if any
-			twViol += Math.max(0, totalTime - getDepot().getEndTw());
-			loadV += Math.max(0, vehicle_load_viol[vehicle_id]);
+			vehicleTwViol += Math.max(0, vehicleTotalT - getDepot().getEndTw());
 			
+			
+			totalTravelT += vehicleTravelT;  
+			totalLoadViol += Math.max(0, vehicle_load_viol[vehicle_id]); 
+			totalTwViol +=  vehicleTwViol;
+			totalWaitingT += vehicleWaitingT;
+			totalServiceT += vehicleServiceT;
+			totalT += vehicleTotalT;
+
 			vehicle_id++;
+			// new vehicle so i put everything to zero			
+			vehicleTravelT = 0;
+			vehicleTwViol = 0;
+			vehicleWaitingT = 0;
+			vehicleTotalT = 0;
+			vehicleServiceT = 0;
 
         } 
 	    
-	    customerK.setArriveTime(totalTime);
+	    customerK.setArriveTime(vehicleTotalT);
 	    // add waiting time if any
-	    waitingT = Math.max(0, customerK.getStartTw() - totalTime);
-	    totWaitingT += waitingT;
+	    customerWaitingT = Math.max(0, customerK.getStartTw() - vehicleTotalT);
+	    vehicleWaitingT += customerWaitingT;
 
 	    // update customer timings information
-	    customerK.setWaitingTime(waitingT);
+	    customerK.setWaitingTime(customerWaitingT);
 
-	    totalTime += waitingT;
+	    vehicleTotalT += customerWaitingT;
 
 	    // add time window violation if any
-	    twViol = Math.max(0, totalTime - customerK.getEndTw());
+	    vehicleTwViol = Math.max(0, vehicleTotalT - customerK.getEndTw());
 
-	    customerK.setTwViol(twViol);
-	    totTwViol += twViol;
+	    customerK.setTwViol(vehicleTwViol);
 	    // add service time to the chromosome
-	    serviceT += customerK.getServiceDuration();
+	    vehicleServiceT += customerK.getServiceDuration();
 	    // add the service time to the total
-	    totalTime += serviceT;
+	    vehicleTotalT += vehicleServiceT;
 	    // add service time to the chromosome
 	 }
+	
+	cost.setTravelTime(totalTravelT);
+	cost.setServiceTime(totalServiceT);
+	cost.setWaitingTime(totalWaitingT);
+	cost.setTotal(totalT);
+	cost.setTwViol(totalTwViol);
+	cost.setLoadViol(totalLoadViol);
 
-	cost.setTravelTime(travelT);
-	cost.setServiceTime(serviceT);
-	cost.setWaitingTime(totWaitingT);
-	cost.setTotal(totalTime);
-	cost.setTwViol(totTwViol);
-	cost.setLoadViol(loadV);
     }
  
 	protected int length() {
