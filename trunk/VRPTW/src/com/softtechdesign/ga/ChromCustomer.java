@@ -29,6 +29,7 @@ public class ChromCustomer extends Chromosome {
     
     private Instance instance;           // Reference to the instance of the problem 
     private Cost cost;			         // Cost of the entire chromosome
+    private int vehicleNum;
     private double[] vehicle_load_viol;  // Load violation of each vehicle
     
     
@@ -44,10 +45,9 @@ public class ChromCustomer extends Chromosome {
         	genes[i] = new Customer();
         this.instance = instance;
         this.cost = new Cost();
-        int nv = instance.getVehiclesNr();
-        this.vehicle_load_viol = new double[nv];
-        for(int i=0; i<nv; i++)
-        	vehicle_load_viol[i] = -instance.getVehicleCapacity();
+        vehicleNum = instance.getVehiclesNr();
+        this.vehicle_load_viol = new double[vehicleNum];
+        initLoadViol();
         this.depot_id = instance.getCustomersNr();
         buildDepots();
     }
@@ -61,6 +61,11 @@ public class ChromCustomer extends Chromosome {
 	depots = new Depot[depot_num];
 	for(int i=0; i<depot_num; i++)
 	    depots[i] = instance.getDepot(i);
+    }
+    
+    private void initLoadViol(){
+        for(int i=0; i<vehicleNum; i++)
+        	vehicle_load_viol[i] = -instance.getVehicleCapacity();
     }
     
     private int getDepotNum(){
@@ -253,6 +258,7 @@ public class ChromCustomer extends Chromosome {
 			vehicleWaitingT = 0;
 			vehicleTotalT = 0;
 			vehicleServiceT = 0;
+			initLoadViol();
 
         } 
 	    

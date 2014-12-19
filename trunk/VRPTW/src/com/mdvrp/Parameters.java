@@ -14,16 +14,6 @@ public class Parameters {
 	private String mode;
 	private boolean help;
 	
-	// TS specific parameters
-	private MovesType movesType;
-	private double precision;
-	private int iterations;
-	private int startClient;
-	private int randomSeed;
-	private int tabuTenure;
-	private boolean variableTenure;
-	private String currDir;
-
 	// GA specific parameters 
 	private int chromosomeDim;
 	private int populationDim;
@@ -34,7 +24,16 @@ public class Parameters {
 	private int crossoverType;
 	private boolean computeStatistics;
     private double greedyRatio;    //ratio of greedy initial population (1 = all greedy, 0 = all random)
-	
+
+	// TS specific parameters
+	private MovesType movesType;
+	private double precision;
+	private int iterations;
+	private int startClient;
+	private int randomSeed;
+	private int tabuTenure;
+	private boolean variableTenure;
+	private String currDir;	
 
 	
 	public Parameters() {
@@ -45,15 +44,6 @@ public class Parameters {
 		outputFileName    		= currDir + "/output/solutions.csv";
 		help 					= false;
 		
-		// TS specific parameters
-		movesType         		= MovesType.SWAP;
-		precision         		= 1E-2;
-		iterations        		= 1000;
-		startClient       		= -1;
-		tabuTenure        		= -1;
-		randomSeed		  		= -1;
-		variableTenure    		= false;
-		
 		// GA specific parameters
 		chromosomeDim 			= 0; // depends on the number of clients + number of vehicles
 		populationDim 			= 50; 
@@ -63,8 +53,17 @@ public class Parameters {
 		maxGenerations 			= 4000;
 		mutationProb 			= 0.06;
 		computeStatistics 		= true;
-		greedyRatio 			= 0.2;
-				
+		greedyRatio 			= 0.3;
+
+		// TS specific parameters
+		movesType         		= MovesType.SWAP;
+		precision         		= 1E-2;
+		iterations        		= 1000;
+		startClient       		= -1;
+		tabuTenure        		= -1;
+		randomSeed		  		= -1;
+		variableTenure    		= false;
+						
 		
 	}
 	
@@ -172,14 +171,6 @@ public class Parameters {
 		print.append("\n" + "--- General Parameters: -------------------------------------");
 		print.append("\n" + "| Input File Name= " + inputFileName);
 		print.append("\n" + "| Output File Name= " + outputFileName);
-		print.append("\n" + "--- TS-specific Parameters: ---------------------------------");
-		print.append("\n" + "| Moves Type= " + movesType);
-		print.append("\n" + "| Precision: " + precision);
-		print.append("\n" + "| Iterations: " + iterations);
-		print.append("\n" + "| Start Client: " + startClient);
-		print.append("\n" + "| Random Seed: " + randomSeed);
-		print.append("\n" + "| Tabu Tenure: " + tabuTenure);
-		print.append("\n" + "| Variable Tenure: " + variableTenure);
 		print.append("\n" + "--- GA-specific Parameters: ---------------------------------");
 		print.append("\n" + "| Chromosome Dim = " + chromosomeDim);
 		print.append("\n" + "| Population Dim: " + populationDim);
@@ -189,6 +180,14 @@ public class Parameters {
 		print.append("\n" + "| Max Generations: " + maxGenerations);
 		print.append("\n" + "| Mutation Probability = " + mutationProb);
 		print.append("\n" + "| Greedy Ratio = " + greedyRatio);
+		print.append("\n" + "--- TS-specific Parameters: ---------------------------------");
+		print.append("\n" + "| Moves Type= " + movesType);
+		print.append("\n" + "| Precision: " + precision);
+		print.append("\n" + "| Iterations: " + iterations);
+		print.append("\n" + "| Start Client: " + startClient);
+		print.append("\n" + "| Random Seed: " + randomSeed);
+		print.append("\n" + "| Tabu Tenure: " + tabuTenure);
+		print.append("\n" + "| Variable Tenure: " + variableTenure);
 		print.append("\n" + "------------------------------------------------------");
 		return print.toString();	
 	}
@@ -206,15 +205,14 @@ public class Parameters {
 		buff.append("                    Optional\n");
 		buff.append("-of output_file\n");
 		buff.append("-m mode [gats | onlyts]\n");
+		buff.append("-pd population_dim\n");
+		buff.append("-mg max_generations\n");
+		buff.append("-cp crossover_prob\n");
+		buff.append("-rsc random_selection_chance\n");
+		buff.append("-gr greedy_ratio\n");
 		buff.append("-it TS_iterations\n");
 		buff.append("-vt variable_tenure [true | false]\n");
 		buff.append("-t tabu_tenure\n");
-		buff.append("-pd population_dim\n");
-		buff.append("-cp crossover_prob\n");
-		buff.append("-rsc random_selection_chance\n");
-		buff.append("-mg max_generations\n");
-//		buff.append("-mp mutation_prob\n");
-		buff.append("-gr greedy_ratio\n");
 		
 		System.out.println(buff.toString());
 	}
