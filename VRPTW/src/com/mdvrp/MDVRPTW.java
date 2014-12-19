@@ -134,8 +134,8 @@ public class MDVRPTW {
 				for (int j = 0; j < TSsearch.feasibleRoutes[i].length; ++j)
 					if (TSsearch.feasibleRoutes[i][j].getCustomersLength() > 0)
 						routesNr++;
-			// Print results
-			String outSol = String.format("param:%s;  cost:%5.2f;  time:%d;  veicles:%4d\r\n",
+			// Print results              "param:%s;  cost:%5.2f;  time:%d;  veicles:%4d\
+			String outSol = String.format("%s;  %5.2f;  %d;  %4d\r\n",
 										  instance.getParameters().getInputFileName(),
 					                      TSsearch.feasibleCost.total, duration.getSeconds(),
 					                      routesNr);
