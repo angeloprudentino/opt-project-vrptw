@@ -1,6 +1,9 @@
 package com.softtechdesign.ga;
+import java.util.Date;
+
 import com.mdvrp.Customer;
 import com.mdvrp.Instance;
+import com.mdvrp.MyLogger;
 
 /**
  * <pre>
@@ -35,8 +38,8 @@ import com.mdvrp.Instance;
  */
 public abstract class GA 
 {
-//	private static String class_name = GA.class.getName();
-//	private static MyLogger MyLog = new MyLogger(class_name);
+	private static String class_name = GA.class.getName();
+	private static MyLogger MyLog = new MyLogger(class_name);
 	
 	/** instance of the problem;
 	 * used only for GARoute
@@ -297,7 +300,7 @@ public abstract class GA
     {
         int iGen;
 
-//        MyLog.info(class_name, "evolve()", "GA start time: " + new Date().toString());
+        MyLog.info(class_name, "evolve()", "GA start time: " + new Date().toString());
         
         //addChromosomesToLog(0, populationDim);
 
@@ -314,9 +317,9 @@ public abstract class GA
                 this.genAvgFitness[iGen] = getAvgFitness();
             }
 
-            //MyLog.info(class_name, "evolve()", "best chromosome at iteration " + iGen + ":");
-            //MyLog.info(class_name, "evolve()", this.chromosomes[this.bestFitnessChromIndex].getGenesAsStr());
-            //System.out.println("Gneration " + (iGen+1) + " completed");
+//            MyLog.info(class_name, "evolve()", "best chromosome at iteration " + iGen + ":");
+//            MyLog.info(class_name, "evolve()", this.chromosomes[this.bestFitnessChromIndex].getGenesAsStr());
+//            System.out.println("Gneration " + (iGen+1) + " completed");
             iGen++;
         }
 
@@ -328,10 +331,10 @@ public abstract class GA
         
         ChromCustomer chr = (ChromCustomer) this.chromosomes[this.bestFitnessChromIndex];
         best_feasible_sol.UpdateSolution(chr);
-//        MyLog.info(class_name, "evolve()", "Best Chromosome Found: ");
-//        MyLog.info(class_name, "evolve()", chr.getGenesAsStr() + " Fitness= " + chr.fitness + "\n--------------------------------------------------");
+        MyLog.info(class_name, "evolve()", "Best Chromosome Found: ");
+        MyLog.info(class_name, "evolve()", chr.getGenesAsStr() + " Fitness= " + chr.fitness + "\n--------------------------------------------------");
 
-//        MyLog.info(class_name, "evolve()", "GA end time: " + new Date().toString());
+        MyLog.info(class_name, "evolve()", "GA end time: " + new Date().toString());
      }
 
     /**
